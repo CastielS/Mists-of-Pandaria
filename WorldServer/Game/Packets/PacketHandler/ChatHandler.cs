@@ -26,7 +26,7 @@ namespace WorldServer.Game.Packets.PacketHandler
     public class ChatHandler : Globals
     {
         [Opcode(ClientMessage.ChatMessageSay, "16135")]
-        public static void HandleMessageChat(ref PacketReader packet, ref WorldClass session)
+        public static void HandleChatMessageSay(ref PacketReader packet, ref WorldClass session)
         {
             BitUnpack BitUnpack = new BitUnpack(packet);
             int language = packet.ReadInt32();
@@ -40,7 +40,18 @@ namespace WorldServer.Game.Packets.PacketHandler
                 ChatCommandParser.ExecuteChatHandler(chatMessage);
             }
             else
-                SendMessageByType(ref session, 1, language, chatMessage);
+                SendMessageByType(ref session, (byte)MessageType.ChatMessageSay, language, chatMessage);
+        }
+
+        [Opcode(ClientMessage.ChatMessageYell, "16135")]
+        public static void HandleChatMessageYell(ref PacketReader packet, ref WorldClass session)
+        {
+            BitUnpack BitUnpack = new BitUnpack(packet);
+            int language = packet.ReadInt32();
+
+            uint messageLength = BitUnpack.GetBits<uint>(9);
+            string chatMessage = packet.ReadString(messageLength);
+            SendMessageByType(ref session, (byte)MessageType.ChatMessageYell, language, chatMessage);
         }
 
         public static void SendMessageByType(ref WorldClass session, byte type, int language, string chatMessage)
@@ -61,3 +72,4 @@ namespace WorldServer.Game.Packets.PacketHandler
         }
     }
 }
+
