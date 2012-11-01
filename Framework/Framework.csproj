@@ -103,11 +103,17 @@
     <Compile Include="Network\Packets\PacketWriter.cs" />
     <Compile Include="ObjectDefines\ObjectMovementValues.cs" />
     <Compile Include="ObjectDefines\Realm.cs" />
+    <Compile Include="ObjectDefines\Vector4.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Singleton\Singleton.cs" />
     <Compile Include="Singleton\SingletonBase.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Configs\RealmServer.conf" />
+    <None Include="Configs\WorldServer.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
