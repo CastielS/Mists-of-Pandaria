@@ -18,6 +18,9 @@
 using Framework.Constants;
 using Framework.Network.Packets;
 using WorldServer.Network;
+using System.Windows;
+using Framework.ObjectDefines;
+using WorldServer.Game.PacketHandler;
 
 namespace WorldServer.Game.Packets.PacketHandler
 {
@@ -117,6 +120,88 @@ namespace WorldServer.Game.Packets.PacketHandler
             BitPack.WriteGuidBytes(7, 3);
 
             session.Send(unsetCanFly);
+        }
+
+        public static void HandleMoveTeleport(ref WorldClass session, Vector4 vector)
+        {
+            bool IsTransport = false;
+            bool Unknown = false;
+
+            PacketWriter moveTeleport = new PacketWriter(JAMCMessage.MoveTeleport);
+            BitPack BitPack = new BitPack(moveTeleport, session.Character.Guid);
+
+            BitPack.Write(IsTransport);
+            BitPack.WriteGuidMask(5);
+
+            // Transport guid
+            if (IsTransport)
+                BitPack.WriteTransportGuidMask(5, 6, 2, 0, 1, 4, 7, 3);
+
+            BitPack.WriteGuidMask(1, 4, 6, 7, 3, 0);
+            BitPack.Write(Unknown);
+
+            // Unknown bits
+            if (Unknown)
+            {
+                BitPack.Write(false);
+                BitPack.Write(false);
+            }
+
+            BitPack.Flush();
+
+            if (Unknown)
+                moveTeleport.WriteUInt8(0);
+
+            if (IsTransport)
+                BitPack.WriteTransportGuidBytes(2, 7, 1, 5, 6, 0, 4, 3);
+
+            BitPack.WriteGuidBytes(4, 0, 3, 2, 1, 6, 7, 5);
+            
+            moveTeleport.WriteFloat(vector.W);
+            moveTeleport.WriteFloat(vector.X);
+            moveTeleport.WriteFloat(vector.Y);
+            moveTeleport.WriteUInt32(0);
+            moveTeleport.WriteFloat(vector.Z);
+
+            session.Send(moveTeleport);
+        }
+
+        public static void HandleTransferPending(ref WorldClass session, uint mapId)
+        {
+            bool Unknown = false;
+            bool IsTransport = false;
+
+            PacketWriter transferPending = new PacketWriter(JAMCMessage.TransferPending);
+            BitPack BitPack = new BitPack(transferPending);
+
+            BitPack.Write(Unknown);
+            BitPack.Write(IsTransport);
+
+            if (Unknown)
+                transferPending.WriteUInt32(0);
+
+            if (IsTransport)
+            {
+                transferPending.WriteUInt32(0);
+                transferPending.WriteUInt32(0);
+            }
+            
+            transferPending.WriteUInt32(mapId);
+
+            session.Send(transferPending);
+        }
+
+        public static void HandleNewWorld(ref WorldClass session, Vector4 vector, uint mapId)
+        {
+            PacketWriter newWorld = new PacketWriter(JAMCMessage.NewWorld);
+
+            newWorld.WriteFloat(vector.Z);
+            newWorld.WriteFloat(vector.Y);
+            newWorld.WriteFloat(vector.W);
+            newWorld.WriteUInt32(mapId);
+            newWorld.WriteFloat(vector.X);
+
+            session.Send(newWorld);
         }
     }
 }

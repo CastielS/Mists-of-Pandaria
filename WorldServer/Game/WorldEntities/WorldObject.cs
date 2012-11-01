@@ -18,17 +18,10 @@
 using Framework.Network.Packets;
 using System;
 using System.Collections;
+using Framework.ObjectDefines;
 
 namespace WorldServer.Game.WorldEntities
 {
-    public struct ObjectPosition
-    {
-        public float PositionX { get; set; }
-        public float PositionY { get; set; }
-        public float PositionZ { get; set; }
-        public float Orientation { get; set; }
-    }
-
     public class WorldObject
     {
         public bool IsInWorld { get; set; }
@@ -37,12 +30,8 @@ namespace WorldServer.Game.WorldEntities
         public int DataLength;
         public Hashtable UpdateData = new Hashtable();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dataLength">UpdateFields.cs enum End fields</param>
-        /// <returns></returns>
         public WorldObject() { }
+        
         public WorldObject(int dataLength)
         {
             IsInWorld = false;

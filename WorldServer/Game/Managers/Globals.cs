@@ -23,6 +23,7 @@ namespace WorldServer.Game.Managers
     public class Globals
     {
         public static CharacterStore CharacterMgr;
+        public static ObjectManager ObjectMgr;
         public static SkillManager SkillMgr;
         public static SpellManager SpellMgr;
         public static WorldManager WorldMgr;
@@ -35,6 +36,7 @@ namespace WorldServer.Game.Managers
         public static void InitializeManager()
         {
             CharacterMgr = CharacterStore.GetInstance();
+            ObjectMgr = ObjectManager.GetInstance();
             SkillMgr = SkillManager.GetInstance();
             SpellMgr = SpellManager.GetInstance();
             WorldMgr = WorldManager.GetInstance();

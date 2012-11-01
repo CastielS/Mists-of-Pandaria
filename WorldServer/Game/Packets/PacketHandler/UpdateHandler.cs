@@ -25,7 +25,7 @@ namespace WorldServer.Game.PacketHandler
 {
     public class UpdateHandler : Globals
     {
-        public static void HandleUpdateObject(ref PacketReader packet, ref WorldClass session)
+        public static void HandleUpdateObject(ref WorldClass session)
         {
             Character character = session.Character;
             PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);

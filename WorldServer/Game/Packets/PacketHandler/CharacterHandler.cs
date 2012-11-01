@@ -257,7 +257,7 @@ namespace WorldServer.Game.PacketHandler
 
             MiscHandler.HandleMessageOfTheDay(ref session);
             SpellHandler.HandleSendKnownSpells(ref session);
-            UpdateHandler.HandleUpdateObject(ref packet, ref session);
+            UpdateHandler.HandleUpdateObject(ref session);
         }
     }
 }

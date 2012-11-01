@@ -18,6 +18,8 @@
 using Framework.Console;
 using WorldServer.Game.Managers;
 using WorldServer.Game.Packets.PacketHandler;
+using Framework.ObjectDefines;
+using WorldServer.Game.PacketHandler;
 
 namespace WorldServer.Game.Chat.Commands
 {
@@ -137,6 +139,39 @@ namespace WorldServer.Game.Chat.Commands
             }
 
             ChatHandler.SendMessageByType(ref session, 0, 0, "Flight speed set to default.");
+        }
+
+        [ChatCommand("tele", "Usage: !tele #x #y #z #o #map (Force teleport to a new location)")]
+        public static void Teleport(string[] args)
+        {
+            var session = GetSession();
+            var pChar = session.Character;
+
+            Vector4 vector = new Vector4()
+            {
+                X = CommandParser.Read<float>(args, 1),
+                Y = CommandParser.Read<float>(args, 2),
+                Z = CommandParser.Read<float>(args, 3),
+                W = CommandParser.Read<float>(args, 4)
+            };
+
+            uint mapId = CommandParser.Read<uint>(args, 5);
+
+            if (pChar.Map == mapId)
+            {
+                MoveHandler.HandleMoveTeleport(ref session, vector);
+                ObjectMgr.SetPosition(ref pChar, vector);
+            }
+            else
+            {
+                MoveHandler.HandleTransferPending(ref session, mapId);
+                MoveHandler.HandleNewWorld(ref session, vector, mapId);
+
+                ObjectMgr.SetPosition(ref pChar, vector);
+                ObjectMgr.SetMap(ref pChar, mapId);
+
+                UpdateHandler.HandleUpdateObject(ref session);
+            }
         }
     }
 }

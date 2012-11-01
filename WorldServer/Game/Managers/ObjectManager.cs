@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Framework.ObjectDefines;
 using Framework.Singleton;
 using System;
 using System.Collections.Generic;
 using WorldServer.Game.WorldEntities;
+using Framework.Database;
 
 namespace WorldServer.Game.Managers
 {
@@ -31,10 +33,6 @@ namespace WorldServer.Game.Managers
             objectList = new Dictionary<UInt64, WorldObject>();
         }
 
-        public void AddObject(WorldObject Object)
-        {
-        }
-
         public WorldObject FindObject(UInt64 guid)
         {
             foreach (KeyValuePair<UInt64, WorldObject> kvp in objectList)
@@ -42,6 +40,23 @@ namespace WorldServer.Game.Managers
                     return kvp.Value;
 
             return null;
+        }
+
+        public void SetPosition(ref Character pChar, Vector4 vector)
+        {
+            pChar.X = vector.X;
+            pChar.Y = vector.Y;
+            pChar.Z = vector.Z;
+            pChar.O = vector.W;
+
+            DB.Characters.Execute("UPDATE characters SET x = '{0}', y = '{1}', z = '{2}', o = '{3}' WHERE guid = {4}", vector.X, vector.Y, vector.Z, vector.W, pChar.Guid);
+        }
+
+        public void SetMap(ref Character pChar, uint mapId)
+        {
+            pChar.Map = mapId;
+
+            DB.Characters.Execute("UPDATE characters SET map = {0} WHERE guid = {1}", mapId, pChar.Guid);
         }
     }
 }
