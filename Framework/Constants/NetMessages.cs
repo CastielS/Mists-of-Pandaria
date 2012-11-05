@@ -437,6 +437,10 @@ namespace Framework.Constants
     [Flags]
     public enum LegacyMessage : uint
     {
+        #region Cinematic
+        StartCinematic                           = 0xC18,
+        #endregion
+
         SetAddonInfoRequest                      = 0x9C6,
         UpdateClientCacheVersion                 = 0x956,
         RealmSplitStateResponse                  = 0xCCD,

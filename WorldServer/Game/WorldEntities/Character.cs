@@ -50,6 +50,7 @@ namespace WorldServer.Game.WorldEntities
         public UInt32 PetFamily;
         public UInt32 CharacterFlags;
         public UInt32 CustomizeFlags;
+        public Boolean LoginCinematic;
 
         public List<Skill> Skills = new List<Skill>();
         public List<PlayerSpell> SpellList = new List<PlayerSpell>();
@@ -82,6 +83,7 @@ namespace WorldServer.Game.WorldEntities
             PetFamily      = result.Read<UInt32>(0, "PetFamily");
             CharacterFlags = result.Read<UInt32>(0, "CharacterFlags");
             CustomizeFlags = result.Read<UInt32>(0, "CustomizeFlags");
+            LoginCinematic = result.Read<Boolean>(0, "LoginCinematic");
 
             Globals.SpellMgr.LoadSpells(this);
             Globals.SkillMgr.LoadSkills(this);

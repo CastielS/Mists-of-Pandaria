@@ -62,6 +62,7 @@
     <Compile Include="Game\Packets\PacketHandler\CacheHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\CharacterHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\ChatHandler.cs" />
+    <Compile Include="Game\Packets\PacketHandler\CinematicHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\LogoutHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\MiscHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\MoveHandler.cs" />

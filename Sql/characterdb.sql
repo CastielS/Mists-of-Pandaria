@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50519
 File Encoding         : 65001
 
-Date: 2012-10-30 04:10:52
+Date: 2012-11-06 00:06:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -44,6 +44,7 @@ CREATE TABLE `characters` (
   `petFamily` int(11) NOT NULL DEFAULT '0',
   `characterFlags` int(11) NOT NULL DEFAULT '0',
   `customizeFlags` int(11) NOT NULL DEFAULT '0',
+  `loginCinematic` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`guid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
