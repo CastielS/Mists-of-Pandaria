@@ -25,9 +25,9 @@ namespace Framework.Network.Packets
         public ClientMessage Opcode { get; set; }
         public string WoWBuild { get; set; }
 
-        public OpcodeAttribute(ClientMessage ocpode, string wowBuild)
+        public OpcodeAttribute(ClientMessage opcode, string wowBuild)
         {
-            Opcode = ocpode;
+            Opcode = opcode;
             WoWBuild = wowBuild;
         }
     }

@@ -497,9 +497,14 @@ namespace Framework.Constants
         EnableNagle                              = -1,
         SuspendTokenResponse                     = -1,
         RequestUITime                            = -1,
-        ChatMessageSay                           = 0x61A,
         NameCache                                = 0x884,
         RealmCache                               = 0x81B,
+        #endregion
+
+        #region ChatMessages
+        ChatMessageSay                           = 0x61A,
+        ChatMessageYell                          = 0x6E5,
+        ChatMessageWhisper                       = 0xA8,
         #endregion
     }
 
