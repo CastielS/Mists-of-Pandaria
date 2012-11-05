@@ -20,6 +20,7 @@ using WorldServer.Game.Managers;
 using WorldServer.Game.Packets.PacketHandler;
 using Framework.ObjectDefines;
 using WorldServer.Game.PacketHandler;
+using Framework.Database;
 
 namespace WorldServer.Game.Chat.Commands
 {
@@ -141,21 +142,41 @@ namespace WorldServer.Game.Chat.Commands
             ChatHandler.SendMessageByType(ref session, 0, 0, "Flight speed set to default.");
         }
 
-        [ChatCommand("tele", "Usage: !tele #x #y #z #o #map (Force teleport to a new location)")]
+        [ChatCommand("tele", "Usage: !tele [#x #y #z #o #map] or [#location] (Force teleport to a new location by coordinates or location)")]
         public static void Teleport(string[] args)
         {
             var session = GetSession();
             var pChar = session.Character;
+            Vector4 vector;
+            uint mapId;
 
-            Vector4 vector = new Vector4()
+            if (args.Length > 2)
             {
-                X = CommandParser.Read<float>(args, 1),
-                Y = CommandParser.Read<float>(args, 2),
-                Z = CommandParser.Read<float>(args, 3),
-                W = CommandParser.Read<float>(args, 4)
-            };
+                vector = new Vector4()
+                {
+                    X = CommandParser.Read<float>(args, 1),
+                    Y = CommandParser.Read<float>(args, 2),
+                    Z = CommandParser.Read<float>(args, 3),
+                    W = CommandParser.Read<float>(args, 4)
+                };
 
-            uint mapId = CommandParser.Read<uint>(args, 5);
+                mapId = CommandParser.Read<uint>(args, 5);
+            }
+            else
+            {
+                string location = CommandParser.Read<string>(args, 1);
+                SQLResult result = DB.World.Select("SELECT * FROM teleport_locations WHERE location = '{0}'", location);
+
+                vector = new Vector4()
+                {
+                    X = result.Read<float>(0, "X"),
+                    Y = result.Read<float>(0, "Y"),
+                    Z = result.Read<float>(0, "Z"),
+                    W = result.Read<float>(0, "O"),
+                };
+
+                mapId = result.Read<uint>(0, "Map");
+            }
 
             if (pChar.Map == mapId)
             {
