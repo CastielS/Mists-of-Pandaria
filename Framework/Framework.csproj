@@ -110,7 +110,9 @@
     <Compile Include="Singleton\SingletonBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Configs\RealmServer.conf" />
+    <None Include="Configs\RealmServer.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Configs\WorldServer.conf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
