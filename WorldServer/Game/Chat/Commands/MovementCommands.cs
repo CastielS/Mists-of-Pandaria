@@ -194,5 +194,43 @@ namespace WorldServer.Game.Chat.Commands
                 UpdateHandler.HandleUpdateObject(ref session);
             }
         }
+
+        [ChatCommand("start", "Teleports yourself to your start position")]
+        public static void Unstuck(string[] args)
+        {
+            var session = GetSession();
+            var pChar = session.Character;
+            uint mapId;
+            Vector4 vector;
+
+            SQLResult unstuckme = DB.Characters.Select("SELECT map, posX, posY, posZ, posO FROM character_creation_data WHERE race = {0} AND class = {1}", pChar.Race, pChar.Class);
+            DB.Characters.Execute("UPDATE characters SET x = '{0}', y = '{1}', z = '{2}', o = '{3}', map = '{4}' WHERE guid = '{5}'", unstuckme.Read<float>(0, "posX"), unstuckme.Read<float>(0, "posY"), unstuckme.Read<float>(0, "posZ"), unstuckme.Read<float>(0, "posO"), unstuckme.Read<uint>(0, "map"), pChar.Guid);
+
+            vector = new Vector4()
+            {
+                X = unstuckme.Read<float>(0, "posX"),
+                Y = unstuckme.Read<float>(0, "posY"),
+                Z = unstuckme.Read<float>(0, "posZ"),
+                W = unstuckme.Read<float>(0, "posO"),
+            };
+
+            mapId = unstuckme.Read<uint>(0, "map");
+
+            if (pChar.Map == mapId)
+            {
+                MoveHandler.HandleMoveTeleport(ref session, vector);
+                ObjectMgr.SetPosition(ref pChar, vector);
+            }
+            else
+            {
+                MoveHandler.HandleTransferPending(ref session, mapId);
+                MoveHandler.HandleNewWorld(ref session, vector, mapId);
+
+                ObjectMgr.SetPosition(ref pChar, vector);
+                ObjectMgr.SetMap(ref pChar, mapId);
+
+                UpdateHandler.HandleUpdateObject(ref session);
+            }
+        }
     }
 }
