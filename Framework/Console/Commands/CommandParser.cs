@@ -17,6 +17,7 @@
 
 using Framework.Logging;
 using System;
+using System.Globalization;
 
 namespace Framework.Console
 {
@@ -26,7 +27,7 @@ namespace Framework.Console
         {
             try
             {
-                return (T)Convert.ChangeType(args[index], typeof(T));
+                return (T)Convert.ChangeType(args[index], typeof(T), CultureInfo.GetCultureInfo("en-US").NumberFormat);
             }
             catch
             {
