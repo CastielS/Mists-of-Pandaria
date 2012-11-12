@@ -40,7 +40,7 @@ namespace WorldServer.Game.Packets.PacketHandler
                 ChatCommandParser.ExecuteChatHandler(chatMessage);
             }
             else
-                SendMessageByType(ref session, (byte)MessageType.ChatMessageSay, language, chatMessage);
+                SendMessageByType(ref session, MessageType.ChatMessageSay, language, chatMessage);
         }
 
         [Opcode(ClientMessage.ChatMessageYell, "16135")]
@@ -51,15 +51,33 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             uint messageLength = BitUnpack.GetBits<uint>(9);
             string chatMessage = packet.ReadString(messageLength);
-            SendMessageByType(ref session, (byte)MessageType.ChatMessageYell, language, chatMessage);
+            SendMessageByType(ref session, MessageType.ChatMessageYell, language, chatMessage);
         }
 
-        public static void SendMessageByType(ref WorldClass session, byte type, int language, string chatMessage)
+        [Opcode(ClientMessage.ChatMessageWhisper, "16135")]
+        public static void HandleChatMessageWhisper(ref PacketReader packet, ref WorldClass session)
+        {
+            BitUnpack BitUnpack = new BitUnpack(packet);
+            int language = packet.ReadInt32();
+
+            uint nameLength = BitUnpack.GetNameLength<uint>(9);
+            uint messageLength = BitUnpack.GetBits<uint>(9);
+
+            string chatMessage = packet.ReadString(messageLength);
+            string receiverName = packet.ReadString(nameLength);
+
+            WorldClass rSession = WorldMgr.GetSession(receiverName);
+
+            SendMessageByType(ref rSession, MessageType.ChatMessageWhisper, language, chatMessage);
+            SendMessageByType(ref session, MessageType.ChatMessageWhisperInform, language, chatMessage);
+        }
+
+        public static void SendMessageByType(ref WorldClass session, MessageType type, int language, string chatMessage)
         {
             PacketWriter messageChat = new PacketWriter(LegacyMessage.MessageChat);
             ulong guid = session.Character.Guid;
 
-            messageChat.WriteUInt8(type);
+            messageChat.WriteUInt8((byte)type);
             messageChat.WriteInt32(language);
             messageChat.WriteUInt64(guid);
             messageChat.WriteUInt32(0);

@@ -46,6 +46,24 @@ namespace WorldServer.Game.Managers
             Sessions.Remove(guid);
         }
 
+        public WorldClass GetSession(string name)
+        {
+            foreach (var s in Sessions)
+                if (s.Value.Character.Name == name)
+                    return s.Value;
+
+            return null;
+        }
+
+        public WorldClass GetSession(ulong guid)
+        {
+            foreach (var s in Sessions)
+                if (s.Value.Character.Guid == guid)
+                    return s.Value;
+
+            return null;
+        }
+
         public void WriteAccountData(AccountDataMasks mask, ref WorldClass session)
         {
             PacketWriter accountInitialized = new PacketWriter(LegacyMessage.AccountDataInitialized);
