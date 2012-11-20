@@ -35,6 +35,5 @@ namespace Framework.Constants
         Unknown2            = 0x0400,
         Unknown3            = 0x0800,
         Unknown4            = 0x1000,
-        Unknown5            = 0x2000
     }
 }

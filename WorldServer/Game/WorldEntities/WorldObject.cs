@@ -123,6 +123,11 @@ namespace WorldServer.Game.WorldEntities
             }
         }
 
+        public void WriteDynamicUpdateFields(ref PacketWriter packet)
+        {
+            packet.WriteUInt8(0);
+        }
+
         public void SetBit(int index)
         {
             Mask[index >> 3] |= (byte)(1 << (index & 0x7));

@@ -23,7 +23,7 @@ using WorldServer.Network;
 
 namespace WorldServer.Game.PacketHandler
 {
-    public class UpdateHandler : Globals
+    public class ObjectHandler : Globals
     {
         public static void HandleUpdateObject(ref WorldClass session)
         {
@@ -31,16 +31,28 @@ namespace WorldServer.Game.PacketHandler
             PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
 
             updateObject.WriteUInt16((ushort)character.Map);
-            updateObject.WriteUInt32(1);  // Grml sandbox style...
+            updateObject.WriteUInt32(1);
             updateObject.WriteUInt8(1);
             updateObject.WriteGuid(character.Guid);
             updateObject.WriteUInt8(4);
 
-            UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation | UpdateFlag.Self | UpdateFlag.Unknown4;
+            UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation | UpdateFlag.Self;
             WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref character, updateFlags);
+
             character.WriteUpdateFields(ref updateObject);
+            character.WriteDynamicUpdateFields(ref updateObject);
 
             session.Send(updateObject);
+        }
+
+        public static void HandleObjectDestroy(ref WorldClass session)
+        {
+            PacketWriter objectDestroy = new PacketWriter(LegacyMessage.ObjectDestroy);
+
+            objectDestroy.WriteUInt64(session.Character.Guid);
+            objectDestroy.WriteUInt8(0);
+
+            session.Send(objectDestroy);
         }
     }
 }

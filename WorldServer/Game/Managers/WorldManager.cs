@@ -87,84 +87,80 @@ namespace WorldServer.Game.Managers
 
             BitPack BitPack = new BitPack(packet, character.Guid, character.GuildGuid);
 
-            BitPack.Write(values.HasTarget);
-            BitPack.Write(values.IsVehicle);
-            BitPack.Write(values.BitCounter, 24);
-            BitPack.Write(values.HasUnknown5);
-            BitPack.Write(values.HasGoTransportPosition);
-            BitPack.Write(values.HasStationaryPosition);
-            BitPack.Write(values.BitCounter2, 21);
-            BitPack.Write(values.HasUnknown);
-            BitPack.Write(values.HasUnknown3);
-            BitPack.Write(values.HasUnknown4);
-            BitPack.Write(values.IsAlive);
-            BitPack.Write(values.Bit1);
-            BitPack.Write(values.HasUnknown2);
-            BitPack.Write(values.Bit2);
+            BitPack.Write(0);                       // New in 5.1.0, 654, Unknown
+            BitPack.Write(values.Bit0);
             BitPack.Write(values.HasRotation);
-            BitPack.Write(values.HasAnimKits);
-            BitPack.Write(values.Bit3);
+            BitPack.Write(values.HasTarget);
+            BitPack.Write(values.Bit2);
+            BitPack.Write(values.HasUnknown3);
+            BitPack.Write(values.BitCounter, 24);
+            BitPack.Write(values.HasUnknown);
+            BitPack.Write(values.HasGoTransportPosition);
+            BitPack.Write(values.HasUnknown2);
+            BitPack.Write(0);                       // New in 5.1.0, 784, Unknown
             BitPack.Write(values.IsSelf);
+            BitPack.Write(values.Bit1);
+            BitPack.Write(values.IsAlive);
+            BitPack.Write(values.Bit3);
+            BitPack.Write(values.HasUnknown4);
+            BitPack.Write(values.HasStationaryPosition);
+            BitPack.Write(values.IsVehicle);
+            BitPack.Write(values.BitCounter2, 21);
+            BitPack.Write(values.HasAnimKits);
 
             if (values.IsAlive)
             {
                 BitPack.WriteGuidMask(3);
-                BitPack.Write(0);                   // HasSplineData, don't write simple basic splineData
-                BitPack.Write(0, 24);               // BitCounter_Alive_1
-                BitPack.WriteGuidMask(4);
-                BitPack.Write(1);                   // Pitch or splineElevation, not implanted
-                BitPack.Write(values.IsTransport);
                 BitPack.Write(0);                   // IsInterpolated, not implanted
+                BitPack.Write(1);                   // Unknown_Alive_2, Reversed
+                BitPack.Write(0);                   // Unknown_Alive_4
+                BitPack.WriteGuidMask(2);
+                BitPack.Write(0);                   // Unknown_Alive_1
+                BitPack.Write(1);                   // Pitch or splineElevation, not implanted
+                BitPack.Write(true);                // MovementFlags2 are not implanted
+                BitPack.WriteGuidMask(4, 5);
+                BitPack.Write(0, 24);               // BitCounter_Alive_1
+                BitPack.Write(1);                   // Pitch or splineElevation, not implanted
                 BitPack.Write(!values.IsAlive);
+                BitPack.Write(0);                   // Unknown_Alive_3
+                BitPack.WriteGuidMask(0, 6, 7);
+                BitPack.Write(values.IsTransport);
+                BitPack.Write(!values.HasRotation);
 
                 if (values.IsTransport)
                 {
                     // Transports not implanted.
                 }
 
-                BitPack.Write(1);                   // Unknown_Alive_2, Reversed
-                BitPack.WriteGuidMask(7);
-                BitPack.Write(true);                // MovementFlags2 are not implanted
-                BitPack.WriteGuidMask(0);
-                BitPack.Write(0);                   // Unknown_Alive_1
-                BitPack.WriteGuidMask(5);
-
                 /* MovementFlags2 are not implanted
                  * if (movementFlag2 != 0)
-                 * BitPack.Write(0, 12);*/
+                 *     BitPack.Write(0, 12);*/
 
-                BitPack.WriteGuidMask(2, 6);
                 BitPack.Write(true);                // Movementflags are not implanted
+                BitPack.WriteGuidMask(1);
 
                 /* IsInterpolated, not implanted
                  * if (IsInterpolated)
                  * {
-                 * BitPack.Write(0);               // IsFalling
+                 *     BitPack.Write(0);            // IsFalling
                  * }*/
+
+                BitPack.Write(0);                   // HasSplineData, don't write simple basic splineData
 
                 /* Movementflags are not implanted
                 if (movementFlags != 0)
                     BitPack.Write((uint)movementFlags, 30);*/
 
-                BitPack.Write(!values.HasRotation);
-                BitPack.Write(0);                   // Unknown_Alive_3
-                BitPack.Write(0);                   // Unknown_Alive_4
-
                 // Don't send basic spline data and disable advanced data
-                //if (HasSplineData)
-                {
-                    //BitPack.Write(0);                   // Disable advance splineData
-                }
-
-
-                BitPack.WriteGuidMask(1);
-                BitPack.Write(1);                   // Pitch or splineElevation, not implanted
+                // if (HasSplineData)
+                    //BitPack.Write(0);             // Disable advance splineData
             }
 
             BitPack.Flush();
 
             if (values.IsAlive)
             {
+                packet.WriteFloat((float)MovementSpeed.FlyBackSpeed);
 
                 // Don't send basic spline data
                 /*if (HasSplineBasicData)
@@ -181,32 +177,32 @@ namespace WorldServer.Game.Managers
                     packet.WriteFloat(character.Z);
                 }*/
 
-                packet.WriteFloat((float)MovementSpeed.WalkSpeed);
+                packet.WriteFloat((float)MovementSpeed.SwimSpeed);
 
                 if (values.IsTransport)
                 {
                     // Not implanted
                 }
 
-                BitPack.WriteGuidBytes(2);
-                BitPack.WriteGuidBytes(7);
-                packet.WriteUInt32(0);
-                packet.WriteFloat((float)MovementSpeed.FlyBackSpeed);
-                packet.WriteFloat(character.X);
-                packet.WriteFloat(character.Y);
-                BitPack.WriteGuidBytes(5);
-                packet.WriteFloat(character.Z);
-                BitPack.WriteGuidBytes(3, 6, 1);
-                packet.WriteFloat((float)MovementSpeed.FlySpeed);
-                packet.WriteFloat((float)MovementSpeed.PitchSpeed);
-                packet.WriteFloat((float)MovementSpeed.RunSpeed);
-                packet.WriteFloat(character.O);
-                BitPack.WriteGuidBytes(4);
-                packet.WriteFloat((float)MovementSpeed.SwimSpeed);
-                packet.WriteFloat((float)MovementSpeed.RunBackSpeed);
+                BitPack.WriteGuidBytes(1);
                 packet.WriteFloat((float)MovementSpeed.TurnSpeed);
+                packet.WriteFloat(character.Y);
+                BitPack.WriteGuidBytes(3);
+                packet.WriteFloat(character.Z);
+                packet.WriteFloat(character.O);
+                packet.WriteFloat((float)MovementSpeed.RunBackSpeed);
+                BitPack.WriteGuidBytes(0, 6);
+                packet.WriteFloat(character.X);
+                packet.WriteFloat((float)MovementSpeed.WalkSpeed);
+                BitPack.WriteGuidBytes(5);
+                packet.WriteUInt32(0);
+                packet.WriteFloat((float)MovementSpeed.PitchSpeed);
+                BitPack.WriteGuidBytes(2);
+                packet.WriteFloat((float)MovementSpeed.RunSpeed);
+                BitPack.WriteGuidBytes(7);
                 packet.WriteFloat((float)MovementSpeed.SwimBackSpeed);
-                BitPack.WriteGuidBytes(0);
+                BitPack.WriteGuidBytes(4);
+                packet.WriteFloat((float)MovementSpeed.FlySpeed);
             }
 
             if (values.HasRotation)

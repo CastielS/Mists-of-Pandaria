@@ -35,7 +35,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             session.Send(motd);
         }
 
-        [Opcode(ClientMessage.Ping, "16135")]
+        [Opcode(ClientMessage.Ping, "16309")]
         public static void HandlePong(ref PacketReader packet, ref WorldClass session)
         {
             uint sequence = packet.ReadUInt32();
@@ -47,7 +47,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             session.Send(pong);
         }
 
-        [Opcode(ClientMessage.LogDisconnect, "16135")]
+        [Opcode(ClientMessage.LogDisconnect, "16309")]
         public static void HandleDisconnectReason(ref PacketReader packet, ref WorldClass session)
         {
             uint disconnectReason = packet.ReadUInt32();

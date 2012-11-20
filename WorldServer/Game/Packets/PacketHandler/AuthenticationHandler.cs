@@ -30,7 +30,7 @@ namespace WorldServer.Game.PacketHandler
 {
     public class AuthenticationHandler : Globals
     {
-        [Opcode(ClientMessage.TransferInitiate, "16135")]
+        [Opcode(ClientMessage.TransferInitiate, "16309")]
         public static void HandleAuthChallenge(ref PacketReader packet, ref WorldClass session)
         {
             PacketWriter authChallenge = new PacketWriter(JAMCCMessage.AuthChallenge, true);
@@ -45,7 +45,7 @@ namespace WorldServer.Game.PacketHandler
             session.Send(authChallenge);
         }
 
-        [Opcode(ClientMessage.AuthSession, "16135")]
+        [Opcode(ClientMessage.AuthSession, "16309")]
         public static void HandleAuthResponse(ref PacketReader packet, ref WorldClass session)
         {
             BitUnpack BitUnpack = new BitUnpack(packet);
@@ -96,14 +96,16 @@ namespace WorldServer.Game.PacketHandler
 
             if (HasAccountData)
             {
-                BitPack.Write(0);                                  // Unknown, 5.0.4
                 BitPack.Write(realmClassResult.Count, 25);         // Activation count for classes
+                BitPack.Write(0);                                  // Unknown, 5.0.4
+                BitPack.Write(0);                                  // Unknown, 5.1.0
                 BitPack.Write(0, 22);                              // Activate character template windows/button
-                BitPack.Write(realmRaceResult.Count, 25);          // Activation count for races
-                BitPack.Write(IsInQueue);                              // IsInQueue
-
+                
                 //if (HasCharacterTemplate)
                 //Write bits for char templates...
+
+                BitPack.Write(realmRaceResult.Count, 25);          // Activation count for races
+                BitPack.Write(IsInQueue);                          // IsInQueue
             }
 
             if (IsInQueue)
@@ -118,7 +120,19 @@ namespace WorldServer.Game.PacketHandler
 
             if (HasAccountData)
             {
+                //if (HasCharacterTemplate)
+                //Write data for char templates...
+
+                for (int r = 0; r < realmRaceResult.Count; r++)
+                {
+                    authResponse.WriteUInt8(realmRaceResult.Read<byte>(r, "expansion"));
+                    authResponse.WriteUInt8(realmRaceResult.Read<byte>(r, "race"));
+                }
+
+                authResponse.WriteUInt32(0);
+                authResponse.WriteUInt32(0);
                 authResponse.WriteUInt8(0);
+                authResponse.WriteUInt8(session.Account.Expansion);
                 authResponse.WriteUInt8(session.Account.Expansion);
 
                 for (int c = 0; c < realmClassResult.Count; c++)
@@ -127,20 +141,7 @@ namespace WorldServer.Game.PacketHandler
                     authResponse.WriteUInt8(realmClassResult.Read<byte>(c, "expansion"));
                 }
 
-                //if (HasCharacterTemplate)
-                //Write data for char templates...
-                
                 authResponse.WriteUInt32(0);
-                authResponse.WriteUInt32(0);
-                authResponse.WriteUInt32(0);
-
-                for (int r = 0; r < realmRaceResult.Count; r++)
-                {
-                    authResponse.WriteUInt8(realmRaceResult.Read<byte>(r, "race"));
-                    authResponse.WriteUInt8(realmRaceResult.Read<byte>(r, "expansion"));
-                }
-
-                authResponse.WriteUInt8(session.Account.Expansion);
             }
 
             authResponse.WriteUInt8((byte)AuthCodes.AUTH_OK);

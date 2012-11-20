@@ -72,7 +72,7 @@
     <Compile Include="Game\Packets\PacketHandler\SpellHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\TimeHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\TutorialHandler.cs" />
-    <Compile Include="Game\Packets\PacketHandler\UpdateHandler.cs" />
+    <Compile Include="Game\Packets\PacketHandler\ObjectHandler.cs" />
     <Compile Include="Game\Packets\PacketManager.cs" />
     <Compile Include="Game\WorldEntities\Character.cs" />
     <Compile Include="Game\WorldEntities\Creature.cs" />

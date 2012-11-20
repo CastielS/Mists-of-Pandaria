@@ -55,7 +55,7 @@ namespace WorldServer.Game.WorldEntities
         public List<Skill> Skills = new List<Skill>();
         public List<PlayerSpell> SpellList = new List<PlayerSpell>();
 
-        public Character(UInt64 guid) : base((int)PlayerFields.End)
+        public Character(UInt64 guid, int updateLength = (int)PlayerFields.End) : base(updateLength)
         {
             SQLResult result = DB.Characters.Select("SELECT * FROM characters WHERE guid = {0}", guid);
 

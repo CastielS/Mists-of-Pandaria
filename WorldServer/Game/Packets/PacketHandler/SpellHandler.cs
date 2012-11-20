@@ -29,7 +29,7 @@ namespace WorldServer.Game.PacketHandler
         {
             Character pChar = session.Character;
 
-            PacketWriter writer = new PacketWriter(LegacyMessage.SendKnownSpells);
+            PacketWriter writer = new PacketWriter(JAMCMessage.SendKnownSpells);
             BitPack BitPack = new BitPack(writer);
 
             BitPack.Write<uint>((uint)pChar.SpellList.Count, 24);

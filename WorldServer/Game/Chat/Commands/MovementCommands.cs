@@ -191,7 +191,7 @@ namespace WorldServer.Game.Chat.Commands
                 ObjectMgr.SetPosition(ref pChar, vector);
                 ObjectMgr.SetMap(ref pChar, mapId);
 
-                UpdateHandler.HandleUpdateObject(ref session);
+                ObjectHandler.HandleUpdateObject(ref session);
             }
         }
 
@@ -226,7 +226,7 @@ namespace WorldServer.Game.Chat.Commands
                 ObjectMgr.SetPosition(ref pChar, vector);
                 ObjectMgr.SetMap(ref pChar, mapId);
 
-                UpdateHandler.HandleUpdateObject(ref session);
+                ObjectHandler.HandleUpdateObject(ref session);
             }
         }
     }

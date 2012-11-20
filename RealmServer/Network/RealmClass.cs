@@ -98,8 +98,8 @@ namespace Framework.Network.Realm
                 byte[] username = Encoding.ASCII.GetBytes(result.Read<String>(0, "name").ToUpper());
                 byte[] password = Encoding.ASCII.GetBytes(result.Read<String>(0, "password").ToUpper());
 
-                // WoW 5.0.5.16135 (5.0.5b)
-                if (ClientBuild == 16135)
+                // WoW 5.1.0.16309 (5.1.0)
+                if (ClientBuild == 16309)
                 {
                     session.SecureRemotePassword.CalculateX(username, password);
                     byte[] buf = new byte[0x10];
