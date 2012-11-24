@@ -43,6 +43,55 @@ namespace WorldServer.Game.PacketHandler
             character.WriteDynamicUpdateFields(ref updateObject);
 
             session.Send(updateObject);
+
+            var tempSession = WorldMgr.Sessions;
+            tempSession.Remove(character.Guid);
+
+            foreach (var s in tempSession)
+            {
+                if (character.Zone != s.Value.Character.Zone)
+                    continue;
+
+                updateObject = new PacketWriter(LegacyMessage.UpdateObject);
+
+                updateObject.WriteUInt16((ushort)character.Map);
+                updateObject.WriteUInt32(1);
+                updateObject.WriteUInt8(1);
+                updateObject.WriteGuid(character.Guid);
+                updateObject.WriteUInt8(4);
+
+                updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+                WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref character, updateFlags);
+
+                character.WriteUpdateFields(ref updateObject);
+                character.WriteDynamicUpdateFields(ref updateObject);
+
+                s.Value.Send(updateObject);
+            }
+
+            foreach (var s in tempSession)
+            {
+                character = s.Value.Character;
+
+                if (character.Zone != session.Character.Zone)
+                    continue;
+
+                updateObject = new PacketWriter(LegacyMessage.UpdateObject);
+
+                updateObject.WriteUInt16((ushort)character.Map);
+                updateObject.WriteUInt32(1);
+                updateObject.WriteUInt8(1);
+                updateObject.WriteGuid(character.Guid);
+                updateObject.WriteUInt8(4);
+
+                updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+                WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref character, updateFlags);
+
+                character.WriteUpdateFields(ref updateObject);
+                character.WriteDynamicUpdateFields(ref updateObject);
+
+                session.Send(updateObject);
+            }
         }
 
         public static void HandleObjectDestroy(ref WorldClass session)
