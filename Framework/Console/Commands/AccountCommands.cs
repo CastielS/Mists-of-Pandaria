@@ -33,14 +33,19 @@ namespace Framework.Console.Commands
             //byte[] hash = new SHA1CryptoServiceProvider().ComputeHash(Encoding.ASCII.GetBytes(password));
             //string hashString = BitConverter.ToString(hash).Replace("-", "");
 
-            SQLResult result = DB.Realms.Select("SELECT * FROM accounts WHERE name = '{0}'", name);
-            if (result.Count == 0)
-            {
-                if (DB.Realms.Execute("INSERT INTO accounts (name, password, language) VALUES ('{0}', '{1}', '')", name, password.ToUpper()))
-                    Log.Message(LogType.NORMAL, "Account {0} successfully created", name);
-            }
+            if (!name.Contains("@"))
+                Log.Message(LogType.ERROR, "Account name requires an email address", name);
             else
-                Log.Message(LogType.ERROR, "Account {0} already in database", name);
+            {
+                SQLResult result = DB.Realms.Select("SELECT * FROM accounts WHERE name = '{0}'", name);
+                if (result.Count == 0)
+                {
+                    if (DB.Realms.Execute("INSERT INTO accounts (name, password, language) VALUES ('{0}', '{1}', '')", name, password.ToUpper()))
+                        Log.Message(LogType.NORMAL, "Account {0} successfully created", name);
+                }
+                else
+                    Log.Message(LogType.ERROR, "Account {0} already in database", name);
+            }
         }
     }
 }
