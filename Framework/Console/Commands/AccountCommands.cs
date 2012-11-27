@@ -34,7 +34,7 @@ namespace Framework.Console.Commands
             //string hashString = BitConverter.ToString(hash).Replace("-", "");
 
             if (!name.Contains("@"))
-                Log.Message(LogType.ERROR, "Account name requires an email address", name);
+                Log.Message(LogType.ERROR, "Account name requires an email address");
             else
             {
                 SQLResult result = DB.Realms.Select("SELECT * FROM accounts WHERE name = '{0}'", name);
