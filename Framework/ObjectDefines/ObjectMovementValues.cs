@@ -41,6 +41,8 @@ namespace Framework.ObjectDefines
         public bool Bit1                      = false;
         public bool HasRotation               = false;
         public bool IsTransport               = false;
+        public bool HasMovementFlags          = false;
+        public bool HasMovementFlags2         = false;
 
         public ObjectMovementValues() { }
         public ObjectMovementValues(UpdateFlag updateflags)

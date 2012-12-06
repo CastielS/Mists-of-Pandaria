@@ -21,11 +21,181 @@ using WorldServer.Network;
 using System.Windows;
 using Framework.ObjectDefines;
 using WorldServer.Game.PacketHandler;
+using WorldServer.Game.Managers;
+using System;
+using WorldServer.Game.WorldEntities;
 
 namespace WorldServer.Game.Packets.PacketHandler
 {
-    public class MoveHandler
+    public class MoveHandler : Globals
     {
+        [Opcode(ClientMessage.MoveStartForward, "16309")]
+        public static void HandleMoveStartForward(ref PacketReader packet, ref WorldClass session)
+        {
+            ObjectMovementValues movementValues = new ObjectMovementValues();
+            BitUnpack BitUnpack = new BitUnpack(packet);
+
+            bool[] guidMask = new bool[8];
+            byte[] guidBytes = new byte[8];
+
+            Vector4 vector = new Vector4()
+            {
+                X = packet.ReadFloat(),
+                Y = packet.ReadFloat(),
+                Z = packet.ReadFloat()
+            };
+
+            guidMask[5] = BitUnpack.GetBit();
+            guidMask[4] = BitUnpack.GetBit();
+
+            bool HasSplineElevation = !BitUnpack.GetBit();
+
+            guidMask[3] = BitUnpack.GetBit();
+
+            movementValues.IsTransport = BitUnpack.GetBit();
+            movementValues.HasRotation = !BitUnpack.GetBit();
+
+            bool Unknown = BitUnpack.GetBit();
+
+            guidMask[6] = BitUnpack.GetBit();
+
+            bool HasMovementFlags2 = !BitUnpack.GetBit();
+
+            guidMask[0] = BitUnpack.GetBit();
+            guidMask[2] = BitUnpack.GetBit();
+
+            bool Unknown2 = BitUnpack.GetBit();
+            bool Unknown3 = BitUnpack.GetBit();
+
+            guidMask[7] = BitUnpack.GetBit();
+
+            movementValues.IsAlive = !BitUnpack.GetBit();
+
+            uint counter = BitUnpack.GetBits<uint>(24);
+
+            guidMask[1] = BitUnpack.GetBit();
+
+            bool HasTime = !BitUnpack.GetBit();
+            bool HasPitch = !BitUnpack.GetBit();
+            bool HasMovementFlags = !BitUnpack.GetBit();
+            bool Unknown4 = BitUnpack.GetBit();
+
+            if (HasMovementFlags2)
+                BitUnpack.GetBits<uint>(12);
+
+            /*if (movementValues.IsTransport)
+            {
+
+            }
+            
+            if (IsInterpolated)
+            {
+
+            }*/
+
+            uint u = 0;
+            if (HasMovementFlags)
+               u = BitUnpack.GetBits<uint>(30);
+
+            if (guidMask[1]) guidBytes[1] = (byte)(packet.ReadUInt8() ^ 1);
+
+            for (int i = 0; i < counter; i++)
+                packet.ReadUInt32();
+
+            if (guidMask[0]) guidBytes[0] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[4]) guidBytes[4] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[2]) guidBytes[2] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[5]) guidBytes[5] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[3]) guidBytes[3] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[7]) guidBytes[7] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[6]) guidBytes[6] = (byte)(packet.ReadUInt8() ^ 1);
+
+            /*if (movementValues.IsTransport)
+            {
+
+            }
+            
+            if (IsInterpolated)
+            {
+
+            }*/
+
+            if (movementValues.IsAlive)
+                packet.ReadUInt32();
+
+            var guid = BitConverter.ToUInt64(guidBytes, 0);
+            if (movementValues.HasRotation)
+                vector.W = packet.ReadFloat();
+
+            if (HasSplineElevation)
+                packet.ReadFloat();
+
+            if (HasTime)
+                packet.ReadUInt32();
+
+            if (HasPitch)
+                packet.ReadFloat();
+
+            HandleMoveUpdate(guid, movementValues, vector);
+        }
+
+        public static void HandleMoveUpdate(ulong guid, ObjectMovementValues movementValues, Vector4 vector)
+        {
+            PacketWriter moveUpdate = new PacketWriter(JAMCMessage.MoveUpdate);
+            BitPack BitPack = new BitPack(moveUpdate, guid);
+
+            BitPack.WriteGuidMask(0);
+            BitPack.Write(!movementValues.HasMovementFlags);
+            BitPack.Write(!movementValues.HasRotation);
+            BitPack.WriteGuidMask(2, 6);
+            BitPack.Write(!movementValues.HasMovementFlags2);
+            BitPack.WriteGuidMask(7);
+            BitPack.Write<uint>(0, 24);
+            BitPack.WriteGuidMask(1);
+
+            if (movementValues.HasMovementFlags)
+                BitPack.Write(0, 30);
+
+            BitPack.WriteGuidMask(4);
+            BitPack.Write(!movementValues.IsAlive);
+            BitPack.Write(0);
+
+            if (movementValues.HasMovementFlags2)
+                BitPack.Write(0, 12);
+
+            BitPack.Write(0);
+            BitPack.WriteGuidMask(5);
+            BitPack.Write(true);
+            BitPack.Write(0);
+            BitPack.Write(0);
+            BitPack.Write(0);
+            BitPack.Write(true);
+            BitPack.WriteGuidMask(3);
+            BitPack.Write(true);
+            BitPack.Flush();
+
+            if (movementValues.IsAlive)
+                moveUpdate.WriteUInt32(0);
+
+            BitPack.WriteGuidBytes(5, 7);
+
+            moveUpdate.WriteFloat(vector.Z);
+
+            BitPack.WriteGuidBytes(4, 3, 2, 6, 0);
+
+            moveUpdate.WriteFloat(vector.X);
+
+            if (movementValues.HasRotation)
+                moveUpdate.WriteFloat(vector.W);
+
+            moveUpdate.WriteFloat(vector.Y);
+
+            Character pChar = WorldMgr.GetSession(guid).Character;
+            ObjectMgr.SetPosition(ref pChar, vector, false);
+
+            WorldMgr.SendToAllInZone(guid, moveUpdate);
+        }
+
         public static void HandleMoveSetWalkSpeed(ref WorldClass session, float speed = 2.5f)
         {
             PacketWriter setWalkSpeed = new PacketWriter(JAMCMessage.MoveSetWalkSpeed);

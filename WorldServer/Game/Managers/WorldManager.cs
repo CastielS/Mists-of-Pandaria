@@ -84,6 +84,19 @@ namespace WorldServer.Game.Managers
             session.Send(accountInitialized);
         }
 
+        public void SendToAllInZone(ulong guid, PacketWriter packet)
+        {
+            var zone = Sessions[guid].Character.Zone;
+
+            foreach (var s in Sessions)
+            {
+                if (s.Value.Character.Guid == guid || s.Value.Character.Zone != zone)
+                    continue;
+
+                s.Value.Send(packet);
+            }
+        }
+
         public void WriteUpdateObjectMovement(ref PacketWriter packet, ref Character character, UpdateFlag updateFlags)
         {
             ObjectMovementValues values = new ObjectMovementValues(updateFlags);

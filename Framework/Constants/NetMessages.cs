@@ -506,6 +506,9 @@ namespace Framework.Constants
         ChatMessageYell                          = 0xF7F,
         ChatMessageWhisper                       = 0x306,
         #endregion
+        #region PlayerMovement
+        MoveStartForward                         = 0x0FE
+        #endregion
     }
 
     [Flags]

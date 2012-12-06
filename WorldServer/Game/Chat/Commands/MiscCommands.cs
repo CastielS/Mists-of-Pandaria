@@ -43,5 +43,15 @@ namespace WorldServer.Game.Chat.Commands
 
             ChatHandler.SendMessageByType(ref session, 0, 0, commandList.ToString());
         }
+
+        [ChatCommand("save")]
+        public static void Save(string[] args)
+        {
+            var session = WorldMgr.GetSession(WorldMgr.Session.Character.Guid);
+
+            ObjectMgr.SavePositionToDB(session.Character);
+
+            ChatHandler.SendMessageByType(ref session, 0, 0, "Your character is successfully saved to the database!");
+        }
     }
 }

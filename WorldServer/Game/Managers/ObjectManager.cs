@@ -42,21 +42,33 @@ namespace WorldServer.Game.Managers
             return null;
         }
 
-        public void SetPosition(ref Character pChar, Vector4 vector)
+        public void SetPosition(ref Character pChar, Vector4 vector, bool dbUpdate = true)
         {
             pChar.X = vector.X;
             pChar.Y = vector.Y;
             pChar.Z = vector.Z;
             pChar.O = vector.W;
 
-            DB.Characters.Execute("UPDATE characters SET x = '{0}', y = '{1}', z = '{2}', o = '{3}' WHERE guid = {4}", vector.X, vector.Y, vector.Z, vector.W, pChar.Guid);
+            Globals.WorldMgr.Sessions[pChar.Guid].Character = pChar;
+
+            if (dbUpdate)
+                SavePositionToDB(pChar);
         }
 
-        public void SetMap(ref Character pChar, uint mapId)
+        public void SetMap(ref Character pChar, uint mapId, bool dbUpdate = true)
         {
+
             pChar.Map = mapId;
 
-            DB.Characters.Execute("UPDATE characters SET map = {0} WHERE guid = {1}", mapId, pChar.Guid);
+            Globals.WorldMgr.Sessions[pChar.Guid].Character = pChar;
+
+            if (dbUpdate)
+                SavePositionToDB(pChar);
+        }
+
+        public void SavePositionToDB(Character pChar)
+        {
+            DB.Characters.Execute("UPDATE characters SET x = '{0}', y = '{1}', z = '{2}', o = '{3}', map = {4} WHERE guid = {4}", pChar.X, pChar.Y, pChar.Z, pChar.O, pChar.Map, pChar.Guid);
         }
     }
 }
