@@ -22,6 +22,7 @@ namespace Framework.ObjectDefines
     // Initialize default values for ObjectUpdate movement
     public class ObjectMovementValues
     {
+        // Bits
         public bool HasAnimKits               = false;
         public bool HasUnknown                = false;
         public uint BitCounter                = 0;
@@ -43,6 +44,10 @@ namespace Framework.ObjectDefines
         public bool IsTransport               = false;
         public bool HasMovementFlags          = false;
         public bool HasMovementFlags2         = false;
+
+        // Data
+        public MovementFlag MovementFlags     = 0;
+        public MovementFlag2 MovementFlags2   = 0;
 
         public ObjectMovementValues() { }
         public ObjectMovementValues(UpdateFlag updateflags)

@@ -100,7 +100,6 @@ namespace WorldServer.Game.Managers
         public void WriteUpdateObjectMovement(ref PacketWriter packet, ref Character character, UpdateFlag updateFlags)
         {
             ObjectMovementValues values = new ObjectMovementValues(updateFlags);
-
             BitPack BitPack = new BitPack(packet, character.Guid, character.GuildGuid);
 
             BitPack.Write(0);                       // New in 5.1.0, 654, Unknown
