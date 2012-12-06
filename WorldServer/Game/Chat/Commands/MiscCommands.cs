@@ -27,7 +27,7 @@ namespace WorldServer.Game.Chat.Commands
         public static void Help(string[] args)
         {
             StringBuilder commandList = new StringBuilder();
-            var session = GetSession();
+            var session = WorldMgr.Session;
 
             foreach (var command in ChatCommandParser.ChatCommands)
             {

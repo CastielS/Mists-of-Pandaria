@@ -38,6 +38,9 @@ namespace WorldServer.Game.Managers
 
         public void AddSession(ulong guid, ref WorldClass session)
         {
+            if (Sessions.ContainsKey(guid))
+                Sessions.Remove(guid);
+
             Sessions.Add(guid, session);
         }
 
@@ -153,7 +156,7 @@ namespace WorldServer.Game.Managers
 
                 // Don't send basic spline data and disable advanced data
                 // if (HasSplineData)
-                    //BitPack.Write(0);             // Disable advance splineData
+                //BitPack.Write(0);             // Disable advance splineData
             }
 
             BitPack.Flush();

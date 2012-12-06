@@ -261,8 +261,8 @@ namespace WorldServer.Game.PacketHandler
             Log.Message(LogType.DEBUG, "Character with Guid: {0}, AccountId: {1} tried to enter the world.", guid, session.Account.Id);
 
             session.Character = new Character(guid);
-            WorldMgr.Sessions.Add(session.Character.Guid, session);
 
+            WorldMgr.AddSession(guid, ref session);
             WorldMgr.WriteAccountData(AccountDataMasks.CharacterCacheMask, ref session);
 
             MiscHandler.HandleMessageOfTheDay(ref session);

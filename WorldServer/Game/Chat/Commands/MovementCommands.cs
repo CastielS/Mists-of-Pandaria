@@ -30,7 +30,7 @@ namespace WorldServer.Game.Chat.Commands
         public static void Fly(string[] args)
         {
             string state = CommandParser.Read<string>(args, 1);
-            var session = GetSession();
+            var session = WorldMgr.Session;
 
             if (state == "on")
             {
@@ -47,7 +47,7 @@ namespace WorldServer.Game.Chat.Commands
         [ChatCommand("walkspeed", "Usage: !walkspeed #speed (Set the current walk speed)")]
         public static void WalkSpeed(string[] args)
         {
-            var session = GetSession();
+            var session = WorldMgr.Session;
 
             if (args.Length == 1)
                 MoveHandler.HandleMoveSetWalkSpeed(ref session);
@@ -72,7 +72,7 @@ namespace WorldServer.Game.Chat.Commands
         [ChatCommand("runspeed", "Usage: !runspeed #speed (Set the current run speed)")]
         public static void RunSpeed(string[] args)
         {
-            var session = GetSession();
+            var session = WorldMgr.Session;
 
             if (args.Length == 1)
                 MoveHandler.HandleMoveSetRunSpeed(ref session);
@@ -96,7 +96,7 @@ namespace WorldServer.Game.Chat.Commands
         [ChatCommand("swimspeed", "Usage: !swimspeed #speed (Set the current swim speed)")]
         public static void SwimSpeed(string[] args)
         {
-            var session = GetSession();
+            var session = WorldMgr.Session;
 
             if (args.Length == 1)
                 MoveHandler.HandleMoveSetSwimSpeed(ref session);
@@ -120,7 +120,7 @@ namespace WorldServer.Game.Chat.Commands
         [ChatCommand("flightspeed", "Usage: !flightspeed #speed (Set the current flight speed)")]
         public static void FlightSpeed(string[] args)
         {
-            var session = GetSession();
+            var session = WorldMgr.Session;
 
             if (args.Length == 1)
                 MoveHandler.HandleMoveSetFlightSpeed(ref session);
@@ -145,7 +145,7 @@ namespace WorldServer.Game.Chat.Commands
         [ChatCommand("tele", "Usage: !tele [#x #y #z #o #map] or [#location] (Force teleport to a new location by coordinates or location)")]
         public static void Teleport(string[] args)
         {
-            var session = GetSession();
+            var session = WorldMgr.Session;
             var pChar = session.Character;
             Vector4 vector;
             uint mapId;
@@ -198,7 +198,7 @@ namespace WorldServer.Game.Chat.Commands
         [ChatCommand("start", "Usage: !start (Teleports yourself to your start position)")]
         public static void Start(string[] args)
         {
-            var session = GetSession();
+            var session = WorldMgr.Session;
             var pChar = session.Character;
 
             SQLResult result = DB.Characters.Select("SELECT map, posX, posY, posZ, posO FROM character_creation_data WHERE race = {0} AND class = {1}", pChar.Race, pChar.Class);

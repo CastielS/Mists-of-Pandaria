@@ -27,6 +27,12 @@ namespace Framework.Constants
         End                               = 0x7
     };
 
+    public enum DynamicObjectArrays
+    {
+        // Empty
+        End                               = 0x0
+    }
+
     public enum ItemFields
     {
         Owner                             = ObjectFields.End + 0x0,
@@ -47,10 +53,10 @@ namespace Framework.Constants
         End                               = ObjectFields.End + 0x3D
     };
 
-    public enum ItemDynamicFields
+    public enum ItemDynamicArrays
     {
-        Modifiers                         = ObjectFields.End + 0x0,
-        End                               = ObjectFields.End + 0x4
+        // Empty
+        End                               = DynamicObjectArrays.End
     }
 
     public enum ContainerFields
@@ -59,6 +65,12 @@ namespace Framework.Constants
         Slots                             = ItemFields.End + 0x1,
         End                               = ItemFields.End + 0x49
     };
+
+    public enum ContainerDynamicArrays
+    {
+        // Empty
+        End                               = ItemDynamicArrays.End
+    }
 
     public enum UnitFields
     {
@@ -141,10 +153,10 @@ namespace Framework.Constants
         End                               = ObjectFields.End + 0x93
     };
 
-    public enum UnitDynamicFields
+    public enum UnitDynamicArrays
     {
-        PassiveSpells                     = ObjectFields.End + 0x0,
-        End                               = ObjectFields.End + 0x101
+        PassiveSpells                     = DynamicObjectArrays.End + 0x0,
+        End                               = DynamicObjectArrays.End + 0x101
     }
 
     public enum PlayerFields
@@ -239,11 +251,11 @@ namespace Framework.Constants
         End                               = UnitFields.End + 0x71B
     };
 
-    public enum PlayerDynamicFields
+    public enum PlayerDynamicArrays
     {
-        ResearchSites                     = UnitFields.End + 0x0,
-        DailyQuestsCompleted              = UnitFields.End + 0x2,
-        End                               = UnitFields.End + 0x4
+        ResearchSites                     = UnitDynamicArrays.End + 0x0,
+        DailyQuestsCompleted              = UnitDynamicArrays.End + 0x2,
+        End                               = UnitDynamicArrays.End + 0x4
     }
 
     public enum GameObjectFields
@@ -259,6 +271,13 @@ namespace Framework.Constants
         End                               = ObjectFields.End + 0xC
     };
 
+    public enum GameObjectDynamicArrays
+    {
+        // One field, unknown
+        UnknownField                      = DynamicObjectArrays.End + 0x0,
+        End                               = DynamicObjectArrays.End + 0x1
+    }
+
     public enum DynamicObjectFields
     {
         Caster                            = ObjectFields.End + 0x0,
@@ -268,6 +287,12 @@ namespace Framework.Constants
         CastTime                          = ObjectFields.End + 0x5,
         End                               = ObjectFields.End + 0x6
     };
+
+    public enum DynamicObjectDynamicArrays
+    {
+        // Empty
+        End                               = DynamicObjectArrays.End
+    }
 
     public enum CorpseFields
     {
@@ -282,6 +307,12 @@ namespace Framework.Constants
         End                               = ObjectFields.End + 0x1C
     };
 
+    public enum CorpseDynamicArrays
+    {
+        // Empty
+        End                               = DynamicObjectArrays.End
+    }
+
     public enum AreaTriggerFields
     {
         Caster                            = ObjectFields.End + 0x0,
@@ -291,6 +322,12 @@ namespace Framework.Constants
         End                               = ObjectFields.End + 0x5
     };
 
+    public enum AreaTriggerDynamicArrays
+    {
+        // Empty
+        End                               = DynamicObjectArrays.End
+    }
+
     public enum SceneObjectFields
     {
         ScriptPackageId                   = ObjectFields.End + 0x0,
@@ -298,4 +335,10 @@ namespace Framework.Constants
         CreatedBy                         = ObjectFields.End + 0x2,
         End                               = ObjectFields.End + 0x4
     };
+
+    public enum SceneObjectDynamicArrays
+    {
+        // Empty
+        End                               = DynamicObjectArrays.End
+    }
 }

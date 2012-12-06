@@ -28,11 +28,6 @@ namespace WorldServer.Game.Managers
         public static SpellManager SpellMgr;
         public static WorldManager WorldMgr;
 
-        public static WorldClass GetSession()
-        {
-            return WorldMgr.Session;
-        }
-
         public static void InitializeManager()
         {
             CharacterMgr = CharacterStore.GetInstance();
