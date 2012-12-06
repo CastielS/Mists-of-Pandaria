@@ -507,7 +507,8 @@ namespace Framework.Constants
         ChatMessageWhisper                       = 0x306,
         #endregion
         #region PlayerMovement
-        MoveStartForward                         = 0x0FE
+        MoveStartForward                         = 0x0FE,
+        MoveHeartBeat                            = 0xBD2,
         #endregion
     }
 

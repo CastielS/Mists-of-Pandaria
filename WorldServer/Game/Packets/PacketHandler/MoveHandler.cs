@@ -123,7 +123,6 @@ namespace WorldServer.Game.Packets.PacketHandler
             if (movementValues.IsAlive)
                 packet.ReadUInt32();
 
-            var guid = BitConverter.ToUInt64(guidBytes, 0);
             if (movementValues.HasRotation)
                 vector.W = packet.ReadFloat();
 
@@ -136,6 +135,124 @@ namespace WorldServer.Game.Packets.PacketHandler
             if (HasPitch)
                 packet.ReadFloat();
 
+            var guid = BitConverter.ToUInt64(guidBytes, 0);
+            HandleMoveUpdate(guid, movementValues, vector);
+        }
+
+        [Opcode(ClientMessage.MoveHeartBeat, "16309")]
+        public static void HandleMoveHeartBeat(ref PacketReader packet, ref WorldClass session)
+        {
+            ObjectMovementValues movementValues = new ObjectMovementValues();
+            BitUnpack BitUnpack = new BitUnpack(packet);
+
+            bool[] guidMask = new bool[8];
+            byte[] guidBytes = new byte[8];
+
+            Vector4 vector = new Vector4()
+            {
+                X = packet.ReadFloat(),
+                Y = packet.ReadFloat(),
+                Z = packet.ReadFloat()
+            };
+
+            bool Unknown = BitUnpack.GetBit();
+            bool HasMovementFlags = !BitUnpack.GetBit();
+
+            uint counter = BitUnpack.GetBits<uint>(24);
+
+            movementValues.IsAlive = !BitUnpack.GetBit();
+            bool HasMovementFlags2 = !BitUnpack.GetBit();
+            bool HasPitch = !BitUnpack.GetBit();
+
+            guidMask[4] = BitUnpack.GetBit();
+
+            movementValues.IsTransport = BitUnpack.GetBit();
+
+            guidMask[7] = BitUnpack.GetBit();
+            guidMask[0] = BitUnpack.GetBit();
+
+            bool Unknown2 = BitUnpack.GetBit();
+
+            guidMask[3] = BitUnpack.GetBit();
+
+            bool HasSplineElevation = !BitUnpack.GetBit();
+
+            guidMask[1] = BitUnpack.GetBit();
+
+            bool Unknown3 = BitUnpack.GetBit();
+
+            guidMask[5] = BitUnpack.GetBit();
+            guidMask[2] = BitUnpack.GetBit();
+
+            movementValues.HasRotation = !BitUnpack.GetBit();
+            bool Unknown4 = BitUnpack.GetBit();
+
+            guidMask[6] = BitUnpack.GetBit();
+
+            bool HasTime = !BitUnpack.GetBit();
+
+            /*if (movementValues.IsTransport)
+            {
+
+            }
+            
+            if (IsInterpolated)
+            {
+
+            }*/
+
+            uint u = 0;
+            if (HasMovementFlags)
+                u = BitUnpack.GetBits<uint>(30);
+
+            if (HasMovementFlags2)
+                BitUnpack.GetBits<uint>(12);
+
+            if (guidMask[7]) guidBytes[7] = (byte)(packet.ReadUInt8() ^ 1);
+
+            for (int i = 0; i < counter; i++)
+                packet.ReadUInt32();
+
+            // Workaround!!!
+            if (!HasMovementFlags)
+                packet.ReadUInt32();
+
+            if (guidMask[1]) guidBytes[1] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[3]) guidBytes[3] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[0]) guidBytes[0] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[5]) guidBytes[5] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[4]) guidBytes[4] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[6]) guidBytes[6] = (byte)(packet.ReadUInt8() ^ 1);
+            if (guidMask[2]) guidBytes[2] = (byte)(packet.ReadUInt8() ^ 1);
+
+            /*if (IsInterpolated)
+            {
+
+            }*/
+
+
+            if (HasTime)
+                packet.ReadUInt32();
+
+            /*if (movementValues.IsTransport)
+            {
+
+            }*/
+
+            if (movementValues.HasRotation)
+                vector.W = packet.ReadFloat();
+
+            if (HasPitch)
+                packet.ReadFloat();
+
+            if (movementValues.IsAlive)
+                packet.ReadUInt32();
+
+            if (HasSplineElevation)
+                packet.ReadFloat();
+
+
+            var guid = BitConverter.ToUInt64(guidBytes, 0);
             HandleMoveUpdate(guid, movementValues, vector);
         }
 
