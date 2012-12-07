@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Framework.Configuration;
 
 namespace WorldServer.Game.Chat
 {
@@ -48,6 +49,17 @@ namespace WorldServer.Game.Chat
 
             if (ChatCommands.ContainsKey(command))
                 ChatCommands[command].Invoke(args);
+        }
+
+        public static bool CheckForCommand(string command)
+        {
+            var commandStarts = WorldConfig.GMCommandStart.Split(new string[] { " " }, StringSplitOptions.None);
+
+            foreach (string s in commandStarts)
+                if (command.StartsWith(s))
+                    return true;
+
+            return false;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             uint messageLength = BitUnpack.GetBits<uint>(9);
             string chatMessage = packet.ReadString(messageLength);
 
-            if (chatMessage.StartsWith("!"))
+            if (ChatCommandParser.CheckForCommand(chatMessage))
             {
                 WorldMgr.Session = session;
                 ChatCommandParser.ExecuteChatHandler(chatMessage);

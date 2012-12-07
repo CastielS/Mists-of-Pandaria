@@ -34,7 +34,8 @@ namespace Framework.Configuration
         public static string WorldDBDataBase = config.Read("WorldDB.Database", "");
 
         public static uint RealmId = config.Read<uint>("RealmId", 1);
-
         public static string DataPath = config.Read("DataPath", "./Data/");
+
+        public static string GMCommandStart = config.Read("GM.Command.Start", "!");
     }
 }
