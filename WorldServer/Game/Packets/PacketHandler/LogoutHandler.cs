@@ -28,7 +28,10 @@ namespace WorldServer.Game.Packets.PacketHandler
         [Opcode(ClientMessage.Logout, "16309")]
         public static void HandleLogoutComplete(ref PacketReader packet, ref WorldClass session)
         {
-            WorldMgr.DeleteSession(session.Character.Guid);
+            var pChar = session.Character;
+
+            ObjectMgr.SavePositionToDB(pChar);
+            WorldMgr.DeleteSession(pChar.Guid);
 
             PacketWriter logoutComplete = new PacketWriter(LegacyMessage.LogoutComplete);
             session.Send(logoutComplete);

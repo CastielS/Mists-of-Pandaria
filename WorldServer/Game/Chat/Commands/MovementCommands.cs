@@ -21,6 +21,7 @@ using WorldServer.Game.Packets.PacketHandler;
 using Framework.ObjectDefines;
 using WorldServer.Game.PacketHandler;
 using Framework.Database;
+using System;
 
 namespace WorldServer.Game.Chat.Commands
 {
@@ -167,6 +168,12 @@ namespace WorldServer.Game.Chat.Commands
                 string location = CommandParser.Read<string>(args, 1);
                 SQLResult result = DB.World.Select("SELECT * FROM teleport_locations WHERE location = '{0}'", location);
 
+                if (result.Count == 0)
+                {
+                    ChatHandler.SendMessageByType(ref session, 0, 0, "Teleport location '" + location + "' does not exist.");
+                    return;
+                }
+
                 vector = new Vector4()
                 {
                     X = result.Read<float>(0, "X"),
@@ -228,6 +235,45 @@ namespace WorldServer.Game.Chat.Commands
 
                 ObjectHandler.HandleUpdateObject(ref session);
             }
+        }
+
+        [ChatCommand("gps", "Usage: !gps (Show your current location)")]
+        public static void GPS(string[] args)
+        {
+            var session = WorldMgr.Session;
+            var pChar = session.Character;
+
+            var message = String.Format("Your position is X: {0}, Y: {1}, Z: {2}, W(O): {3}, Map: {4}", pChar.X, pChar.Y, pChar.Z, pChar.O, pChar.Map);
+            ChatHandler.SendMessageByType(ref session, 0, 0, message);
+        }
+
+        [ChatCommand("addtele", "Usage: !addtele #name (Adds a new teleport location to the world database with the given name)")]
+        public static void AddTele(string[] args)
+        {
+            var session = WorldMgr.Session;
+            var pChar = session.Character;
+
+            string location = CommandParser.Read<string>(args, 1);
+            SQLResult result = DB.World.Select("SELECT * FROM teleport_locations WHERE location = '{0}'", location);
+
+            if (result.Count == 0)
+            {
+                DB.World.Execute("INSERT INTO teleport_locations (location, x, y, z, o, map) " +
+                                 "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')", location, pChar.X, pChar.Y, pChar.Z, pChar.O, pChar.Map);
+            }
+            else
+                ChatHandler.SendMessageByType(ref session, 0, 0, String.Format("Teleport location '{0}' already exist.", location));
+        }
+
+        [ChatCommand("deltele", "Usage: !deltele #name (Delete the given teleport location from the world database)")]
+        public static void DelTele(string[] args)
+        {
+            var session = WorldMgr.Session;
+            var pChar = session.Character;
+
+            string location = CommandParser.Read<string>(args, 1);
+            if (DB.World.Execute("DELETE FROM teleport_locations WHERE location = '{0}'", location))
+                ChatHandler.SendMessageByType(ref session, 0, 0, String.Format("Teleport location '{0}' successfully deleted.", location));
         }
     }
 }

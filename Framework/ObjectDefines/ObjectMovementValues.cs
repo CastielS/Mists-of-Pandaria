@@ -44,10 +44,13 @@ namespace Framework.ObjectDefines
         public bool IsTransport               = false;
         public bool HasMovementFlags          = false;
         public bool HasMovementFlags2         = false;
+        public bool IsInterpolated            = false;
+        public bool IsInterpolated2           = false;
 
         // Data
         public MovementFlag MovementFlags     = 0;
         public MovementFlag2 MovementFlags2   = 0;
+        public uint Time                      = 0;
 
         public ObjectMovementValues() { }
         public ObjectMovementValues(UpdateFlag updateflags)

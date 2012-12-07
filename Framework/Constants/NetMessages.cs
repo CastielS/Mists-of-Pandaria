@@ -508,8 +508,12 @@ namespace Framework.Constants
         #endregion
         #region PlayerMovement
         MoveStartForward                         = 0x0FE,
+        MoveStartBackward                        = 0x37A,
         MoveHeartBeat                            = 0xBD2,
         MoveStop                                 = 0x9DF,
+        MoveStartTurnLeft                        = 0x46E,
+        MoveStartTurnRight                       = 0x9F7,
+        MoveStopTurn                             = 0x4CB,
         #endregion
     }
 
