@@ -274,13 +274,14 @@ namespace WorldServer.Game.Packets.PacketHandler
                 Z = packet.ReadFloat()
             };
 
-            bool Unknown = BitUnpack.GetBit();
             movementValues.HasMovementFlags = !BitUnpack.GetBit();
+            movementValues.IsInterpolated = BitUnpack.GetBit();
 
             uint counter = BitUnpack.GetBits<uint>(24);
 
             movementValues.IsAlive = !BitUnpack.GetBit();
             movementValues.HasMovementFlags2 = !BitUnpack.GetBit();
+
             bool HasPitch = !BitUnpack.GetBit();
 
             guidMask[4] = BitUnpack.GetBit();
@@ -313,12 +314,10 @@ namespace WorldServer.Game.Packets.PacketHandler
             /*if (movementValues.IsTransport)
             {
 
-            }
-            
-            if (IsInterpolated)
-            {
-
             }*/
+
+            if (movementValues.IsInterpolated)
+                movementValues.IsInterpolated2 = BitUnpack.GetBit();
 
             if (movementValues.HasMovementFlags)
                 movementValues.MovementFlags = (MovementFlag)BitUnpack.GetBits<uint>(30);
@@ -331,10 +330,6 @@ namespace WorldServer.Game.Packets.PacketHandler
             for (int i = 0; i < counter; i++)
                 packet.ReadUInt32();
 
-            // Workaround!!!
-            if (!movementValues.HasMovementFlags)
-                packet.ReadUInt32();
-
             if (guidMask[1]) guidBytes[1] = (byte)(packet.ReadUInt8() ^ 1);
             if (guidMask[3]) guidBytes[3] = (byte)(packet.ReadUInt8() ^ 1);
             if (guidMask[0]) guidBytes[0] = (byte)(packet.ReadUInt8() ^ 1);
@@ -343,10 +338,18 @@ namespace WorldServer.Game.Packets.PacketHandler
             if (guidMask[6]) guidBytes[6] = (byte)(packet.ReadUInt8() ^ 1);
             if (guidMask[2]) guidBytes[2] = (byte)(packet.ReadUInt8() ^ 1);
 
-            /*if (IsInterpolated)
+            if (movementValues.IsInterpolated)
             {
+                if (movementValues.IsInterpolated2)
+                {
+                    packet.ReadFloat();
+                    packet.ReadFloat();
+                    packet.ReadFloat();
+                }
 
-            }*/
+                packet.ReadFloat();
+                packet.ReadUInt32();
+            }
 
 
             if (HasTime)
