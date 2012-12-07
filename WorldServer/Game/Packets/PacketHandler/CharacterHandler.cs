@@ -36,9 +36,9 @@ namespace WorldServer.Game.PacketHandler
         [Opcode(ClientMessage.EnumCharacters, "16309")]
         public static void HandleEnumCharactersResult(ref PacketReader packet, ref WorldClass session)
         {
-            SQLResult result = DB.Characters.Select("SELECT guid, name, race, class, gender, skin, face, hairstyle, " +
-                                                    "haircolor, facialhair, level, zone, map, x, y, z, guildguid, petdisplayid, " +
-                                                    "petlevel, petfamily, characterflags, customizeflags, loginCinematic FROM characters WHERE accountid = {0}", session.Account.Id);
+            DB.Realms.Execute("UPDATE accounts SET online = 1 WHERE id = ?", session.Account.Id);
+
+            SQLResult result = DB.Characters.Select("SELECT * FROM characters WHERE accountid = ?", session.Account.Id);
 
             PacketWriter enumCharacters = new PacketWriter(JAMCMessage.EnumCharactersResult);
             BitPack BitPack = new BitPack(enumCharacters);
@@ -171,7 +171,7 @@ namespace WorldServer.Game.PacketHandler
             uint nameLength = BitUnpack.GetNameLength<uint>(7);
             string name = packet.ReadString(nameLength);
 
-            SQLResult result = DB.Characters.Select("SELECT * from characters WHERE name = '{0}'", name);
+            SQLResult result = DB.Characters.Select("SELECT * from characters WHERE name = ?", name);
             PacketWriter writer = new PacketWriter(LegacyMessage.ResponseCharacterCreate);
 
             if (result.Count != 0)
@@ -182,7 +182,7 @@ namespace WorldServer.Game.PacketHandler
                 return;
             }
 
-            result = DB.Characters.Select("SELECT map, zone, posX, posY, posZ, posO FROM character_creation_data WHERE race = {0} AND class = {1}", race, pClass);
+            result = DB.Characters.Select("SELECT map, zone, posX, posY, posZ, posO FROM character_creation_data WHERE race = ? AND class = ?", race, pClass);
             if (result.Count == 0)
             {
                 writer.WriteUInt8(0x31);
@@ -198,7 +198,7 @@ namespace WorldServer.Game.PacketHandler
             float posO = result.Read<float>(0, "posO");
 
             DB.Characters.Execute("INSERT INTO characters (name, accountid, race, class, gender, skin, zone, map, x, y, z, o, face, hairstyle, haircolor, facialhair) VALUES (" +
-                                  "'{0}', {1}, {2}, {3}, {4}, {5}, {6}, {7}, '{8}', '{9}', '{10}', '{11}', {12}, {13}, {14}, {15})",
+                                  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                   name, session.Account.Id, race, pClass, gender, skin, zone, map, posX, posY, posZ, posO, face, hairStyle, hairColor, facialHair);
 
             // Success
@@ -215,9 +215,9 @@ namespace WorldServer.Game.PacketHandler
             writer.WriteUInt8(0x47);
             session.Send(writer);
 
-            DB.Characters.Execute("DELETE FROM characters WHERE guid = {0}", guid);
-            DB.Characters.Execute("DELETE FROM character_spells WHERE guid = {0}", guid);
-            DB.Characters.Execute("DELETE FROM character_skills WHERE guid = {0}", guid);
+            DB.Characters.Execute("DELETE FROM characters WHERE guid = ?", guid);
+            DB.Characters.Execute("DELETE FROM character_spells WHERE guid = ?", guid);
+            DB.Characters.Execute("DELETE FROM character_skills WHERE guid = ?", guid);
         }
 
         [Opcode(ClientMessage.RequestRandomCharacterName, "16309")]
@@ -234,7 +234,7 @@ namespace WorldServer.Game.PacketHandler
             do
             {
                 NewName = names[rand.Next(names.Count)];
-                result = DB.Characters.Select("SELECT * FROM characters WHERE name = '{0}'", NewName);
+                result = DB.Characters.Select("SELECT * FROM characters WHERE name = ?", NewName);
             }
             while (result.Count != 0);
 

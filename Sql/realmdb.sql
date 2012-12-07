@@ -4,13 +4,13 @@ Navicat MySQL Data Transfer
 Source Server         : local
 Source Server Version : 50519
 Source Host           : localhost:3306
-Source Database       : realmdb
+Source Database       : realms
 
 Target Server Type    : MYSQL
 Target Server Version : 50519
 File Encoding         : 65001
 
-Date: 2012-08-22 06:39:25
+Date: 2012-12-07 17:19:58
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,6 +29,7 @@ CREATE TABLE `accounts` (
   `gmlevel` tinyint(4) NOT NULL DEFAULT '0',
   `ip` varchar(255) DEFAULT NULL,
   `language` varchar(4) DEFAULT NULL,
+  `online` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

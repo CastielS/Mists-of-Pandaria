@@ -50,15 +50,18 @@ namespace RealmServer
             {
                 RealmClass.Realms.Add(new Framework.ObjectDefines.Realm()
                 {
-                    Id = result.Read<uint>(i, "id"),
+                    Id   = result.Read<uint>(i, "id"),
                     Name = result.Read<string>(i, "name"),
-                    IP = result.Read<string>(i, "ip"),
+                    IP   = result.Read<string>(i, "ip"),
                     Port = result.Read<uint>(i, "port"),
                 });
 
                 Log.Message(LogType.NORMAL, "Added Realm \"{0}\"", RealmClass.Realms[i].Name);
             }
             Log.Message();
+
+            // Set all accounts offline
+            DB.Realms.Execute("UPDATE accounts SET online = 0");
 
             if (RealmClass.realm.Start("127.0.0.1", 3724))
             {

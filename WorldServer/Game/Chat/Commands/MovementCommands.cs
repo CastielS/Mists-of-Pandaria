@@ -166,7 +166,7 @@ namespace WorldServer.Game.Chat.Commands
             else
             {
                 string location = CommandParser.Read<string>(args, 1);
-                SQLResult result = DB.World.Select("SELECT * FROM teleport_locations WHERE location = '{0}'", location);
+                SQLResult result = DB.World.Select("SELECT * FROM teleport_locations WHERE location = ?", location);
 
                 if (result.Count == 0)
                 {
@@ -208,7 +208,7 @@ namespace WorldServer.Game.Chat.Commands
             var session = WorldMgr.Session;
             var pChar = session.Character;
 
-            SQLResult result = DB.Characters.Select("SELECT map, posX, posY, posZ, posO FROM character_creation_data WHERE race = {0} AND class = {1}", pChar.Race, pChar.Class);
+            SQLResult result = DB.Characters.Select("SELECT map, posX, posY, posZ, posO FROM character_creation_data WHERE race = ? AND class = ?", pChar.Race, pChar.Class);
 
             Vector4 vector = new Vector4()
             {
@@ -254,12 +254,12 @@ namespace WorldServer.Game.Chat.Commands
             var pChar = session.Character;
 
             string location = CommandParser.Read<string>(args, 1);
-            SQLResult result = DB.World.Select("SELECT * FROM teleport_locations WHERE location = '{0}'", location);
+            SQLResult result = DB.World.Select("SELECT * FROM teleport_locations WHERE location = ?", location);
 
             if (result.Count == 0)
             {
                 DB.World.Execute("INSERT INTO teleport_locations (location, x, y, z, o, map) " +
-                                 "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')", location, pChar.X, pChar.Y, pChar.Z, pChar.O, pChar.Map);
+                                 "VALUES (?, ?, ?, ?, ?, ?)", location, pChar.X, pChar.Y, pChar.Z, pChar.O, pChar.Map);
             }
             else
                 ChatHandler.SendMessageByType(ref session, 0, 0, String.Format("Teleport location '{0}' already exist.", location));
@@ -272,7 +272,7 @@ namespace WorldServer.Game.Chat.Commands
             var pChar = session.Character;
 
             string location = CommandParser.Read<string>(args, 1);
-            if (DB.World.Execute("DELETE FROM teleport_locations WHERE location = '{0}'", location))
+            if (DB.World.Execute("DELETE FROM teleport_locations WHERE location = ?", location))
                 ChatHandler.SendMessageByType(ref session, 0, 0, String.Format("Teleport location '{0}' successfully deleted.", location));
         }
     }

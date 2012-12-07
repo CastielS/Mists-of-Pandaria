@@ -55,7 +55,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             uint realmId = packet.ReadUInt32();
 
-            SQLResult result = DB.Realms.Select("SELECT name FROM realms WHERE id = '{0}'", WorldConfig.RealmId);
+            SQLResult result = DB.Realms.Select("SELECT name FROM realms WHERE id = ?", WorldConfig.RealmId);
             string realmName = result.Read<string>(0, "Name");
 
             PacketWriter nameCache = new PacketWriter(LegacyMessage.RealmCache);

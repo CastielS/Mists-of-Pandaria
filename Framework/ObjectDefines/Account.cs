@@ -28,5 +28,6 @@ namespace Framework.ObjectDefines
         public byte GMLevel { get; set; }
         public string IP { get; set; }
         public string Language { get; set; }
+        public bool Online { get; set; }
     }
 }

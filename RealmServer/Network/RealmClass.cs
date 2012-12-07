@@ -81,7 +81,7 @@ namespace Framework.Network.Realm
             account.IP = data.ReadIPAddress();
             account.Name = data.ReadAccountName();
 
-            SQLResult result = DB.Realms.Select("SELECT id, name, password, expansion, gmlevel, securityFlags FROM accounts WHERE name = '{0}'", account.Name);
+            SQLResult result = DB.Realms.Select("SELECT id, name, password, expansion, gmlevel, securityFlags, online FROM accounts WHERE name = ?", account.Name);
 
             PacketWriter logonChallenge = new PacketWriter();
             logonChallenge.WriteUInt8((byte)ClientLink.CMD_AUTH_LOGON_CHALLENGE);
@@ -89,11 +89,18 @@ namespace Framework.Network.Realm
 
             if (result.Count != 0)
             {
+                if (result.Read<bool>(0, "online"))
+                {
+                    logonChallenge.WriteUInt8((byte)AuthResults.WOW_FAIL_ALREADY_ONLINE);
+                    session.Send(logonChallenge);
+                    return;
+                }
+
                 account.Id = result.Read<Int32>(0, "id");
                 account.Expansion = result.Read<Byte>(0, "expansion");
                 account.SecurityFlags = result.Read<Byte>(0, "securityFlags");
 
-                DB.Realms.Execute("UPDATE accounts SET ip = '{0}', language = '{1}' WHERE id = {2}", account.IP, account.Language, account.Id);
+                DB.Realms.Execute("UPDATE accounts SET ip = ?, language = ? WHERE id = ?", account.IP, account.Language, account.Id);
 
                 byte[] username = Encoding.ASCII.GetBytes(result.Read<String>(0, "name").ToUpper());
                 byte[] password = Encoding.ASCII.GetBytes(result.Read<String>(0, "password").ToUpper());
@@ -162,7 +169,7 @@ namespace Framework.Network.Realm
             logonProof.WriteUInt32(0);
             logonProof.WriteUInt16(0);
 
-            DB.Realms.Execute("UPDATE accounts SET sessionkey = '{0}' WHERE id = {1}", account.SessionKey, account.Id);
+            DB.Realms.Execute("UPDATE accounts SET sessionkey = ? WHERE id = ?", account.SessionKey, account.Id);
 
             session.Send(logonProof);
         }

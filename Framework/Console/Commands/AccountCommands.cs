@@ -37,10 +37,10 @@ namespace Framework.Console.Commands
                 Log.Message(LogType.ERROR, "Account name requires an email address");
             else
             {
-                SQLResult result = DB.Realms.Select("SELECT * FROM accounts WHERE name = '{0}'", name);
+                SQLResult result = DB.Realms.Select("SELECT * FROM accounts WHERE name = ?", name);
                 if (result.Count == 0)
                 {
-                    if (DB.Realms.Execute("INSERT INTO accounts (name, password, language) VALUES ('{0}', '{1}', '')", name, password.ToUpper()))
+                    if (DB.Realms.Execute("INSERT INTO accounts (name, password, language) VALUES (?, ?, '')", name, password.ToUpper()))
                         Log.Message(LogType.NORMAL, "Account {0} successfully created", name);
                 }
                 else

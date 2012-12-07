@@ -58,7 +58,7 @@ namespace WorldServer.Game.PacketHandler
             uint nameLength = BitUnpack.GetNameLength<uint>(12);
             string accountName = packet.ReadString(nameLength);
 
-            SQLResult result = DB.Realms.Select("SELECT * FROM accounts WHERE name = '{0}'", accountName);
+            SQLResult result = DB.Realms.Select("SELECT * FROM accounts WHERE name = ?", accountName);
             if (result.Count == 0)
                 session.clientSocket.Close();
             else
@@ -83,8 +83,8 @@ namespace WorldServer.Game.PacketHandler
             session.Crypt.Initialize(kBytes);
 
             uint realmId = WorldConfig.RealmId;
-            SQLResult realmClassResult = DB.Realms.Select("SELECT class, expansion FROM realm_classes WHERE realmId = '{0}'", realmId);
-            SQLResult realmRaceResult = DB.Realms.Select("SELECT race, expansion FROM realm_races WHERE realmId = '{0}'", realmId);
+            SQLResult realmClassResult = DB.Realms.Select("SELECT class, expansion FROM realm_classes WHERE realmId = ?", realmId);
+            SQLResult realmRaceResult = DB.Realms.Select("SELECT race, expansion FROM realm_races WHERE realmId = ?", realmId);
 
             bool HasAccountData = true;
             bool IsInQueue = false;

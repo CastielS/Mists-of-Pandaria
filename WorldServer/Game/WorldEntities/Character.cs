@@ -57,7 +57,7 @@ namespace WorldServer.Game.WorldEntities
 
         public Character(UInt64 guid, int updateLength = (int)PlayerFields.End) : base(updateLength)
         {
-            SQLResult result = DB.Characters.Select("SELECT * FROM characters WHERE guid = {0}", guid);
+            SQLResult result = DB.Characters.Select("SELECT * FROM characters WHERE guid = ?", guid);
 
             Guid           = result.Read<UInt64>(0, "Guid");
             AccountId      = result.Read<UInt32>(0, "AccountId");

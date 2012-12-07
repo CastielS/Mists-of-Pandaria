@@ -54,6 +54,9 @@ namespace WorldServer
 
             Globals.InitializeManager();
 
+            // Set all accounts offline
+            DB.Realms.Execute("UPDATE accounts SET online = 0");
+
             WorldClass.world = new WorldNetwork();
 
             if (WorldClass.world.Start("127.0.0.1", 8100))

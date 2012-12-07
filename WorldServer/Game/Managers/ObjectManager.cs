@@ -68,7 +68,7 @@ namespace WorldServer.Game.Managers
 
         public void SavePositionToDB(Character pChar)
         {
-            DB.Characters.Execute("UPDATE characters SET x = '{0}', y = '{1}', z = '{2}', o = '{3}', map = {4} WHERE guid = {5}", pChar.X, pChar.Y, pChar.Z, pChar.O, pChar.Map, pChar.Guid);
+            DB.Characters.Execute("UPDATE characters SET x = ?, y = ?, z = ?, o = ?, map = ? WHERE guid = ?", pChar.X, pChar.Y, pChar.Z, pChar.O, pChar.Map, pChar.Guid);
         }
     }
 }

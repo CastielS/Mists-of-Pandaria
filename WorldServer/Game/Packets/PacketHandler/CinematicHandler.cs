@@ -37,7 +37,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             session.Send(startCinematic);
 
             if (pChar.LoginCinematic)
-                DB.Characters.Execute("UPDATE characters SET loginCinematic = 0 WHERE guid = {0}", pChar.Guid);
+                DB.Characters.Execute("UPDATE characters SET loginCinematic = 0 WHERE guid = ?", pChar.Guid);
         }
     }
 }

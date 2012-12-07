@@ -19,10 +19,12 @@ using Framework.Constants;
 using Framework.Logging;
 using Framework.Network.Packets;
 using WorldServer.Network;
+using WorldServer.Game.Managers;
+using Framework.Database;
 
 namespace WorldServer.Game.Packets.PacketHandler
 {
-    public class MiscHandler
+    public class MiscHandler : Globals
     {
         public static void HandleMessageOfTheDay(ref WorldClass session)
         {
@@ -50,7 +52,13 @@ namespace WorldServer.Game.Packets.PacketHandler
         [Opcode(ClientMessage.LogDisconnect, "16309")]
         public static void HandleDisconnectReason(ref PacketReader packet, ref WorldClass session)
         {
+            var pChar = session.Character;
             uint disconnectReason = packet.ReadUInt32();
+
+            if (pChar != null)
+                WorldMgr.DeleteSession(pChar.Guid);
+
+            DB.Realms.Execute("UPDATE accounts SET online = 0 WHERE id = ?", session.Account.Id);
 
             Log.Message(LogType.DEBUG, "Account with Id {0} disconnected. Reason: {1}", session.Account.Id, disconnectReason);
         }

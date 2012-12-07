@@ -21,6 +21,7 @@ using System.Data;
 using System.Globalization;
 using System.Text;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Framework.Database
 {
@@ -57,12 +58,18 @@ namespace Framework.Database
         {
             StringBuilder sqlString = new StringBuilder();
             // Fix for floating point problems on some languages
-            sqlString.AppendFormat(CultureInfo.GetCultureInfo("en-US").NumberFormat, sql, args);
+            sqlString.AppendFormat(CultureInfo.GetCultureInfo("en-US").NumberFormat, sql);
 
             MySqlCommand sqlCommand = new MySqlCommand(sqlString.ToString(), Connection);
 
             try
             {
+                List<MySqlParameter> mParams = new List<MySqlParameter>(args.Length);
+
+                foreach (var a in args)
+                    mParams.Add(new MySqlParameter("", a));
+
+                sqlCommand.Parameters.AddRange(mParams.ToArray());
                 sqlCommand.ExecuteNonQuery();
                 return true;
             }
@@ -79,12 +86,18 @@ namespace Framework.Database
 
             StringBuilder sqlString = new StringBuilder();
             // Fix for floating point problems on some languages
-            sqlString.AppendFormat(CultureInfo.GetCultureInfo("en-US").NumberFormat, sql, args);
+            sqlString.AppendFormat(CultureInfo.GetCultureInfo("en-US").NumberFormat, sql);
 
             MySqlCommand sqlCommand = new MySqlCommand(sqlString.ToString(), Connection);
             
             try
             {
+                List<MySqlParameter> mParams = new List<MySqlParameter>(args.Length);
+
+                foreach (var a in args)
+                    mParams.Add(new MySqlParameter("", a));
+
+                sqlCommand.Parameters.AddRange(mParams.ToArray());
                 SqlData = sqlCommand.ExecuteReader(CommandBehavior.Default);
                 retData.Load(SqlData);
                 retData.Count = retData.Rows.Count;

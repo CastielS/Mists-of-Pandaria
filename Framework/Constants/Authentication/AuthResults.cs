@@ -21,5 +21,6 @@ namespace Framework.Constants.Authentication
     {
         WOW_SUCCESS              = 0x00,
         WOW_FAIL_UNKNOWN_ACCOUNT = 0x04,
+        WOW_FAIL_ALREADY_ONLINE  = 0x06,
     }
 }
