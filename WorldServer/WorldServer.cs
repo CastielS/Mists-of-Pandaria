@@ -59,10 +59,10 @@ namespace WorldServer
 
             WorldClass.world = new WorldNetwork();
 
-            if (WorldClass.world.Start("127.0.0.1", 8100))
+            if (WorldClass.world.Start(WorldConfig.BindIP, (int)WorldConfig.BindPort))
             {
                 WorldClass.world.AcceptConnectionThread();
-                Log.Message(LogType.NORMAL, "WorldServer listening on {0} port {1}.", "127.0.0.1", 8100);
+                Log.Message(LogType.NORMAL, "WorldServer listening on {0} port {1}.", WorldConfig.BindIP, WorldConfig.BindPort);
                 Log.Message(LogType.NORMAL, "WorldServer successfully started!");
 
                 PacketManager.DefineOpcodeHandler();

@@ -63,10 +63,10 @@ namespace RealmServer
             // Set all accounts offline
             DB.Realms.Execute("UPDATE accounts SET online = 0");
 
-            if (RealmClass.realm.Start("127.0.0.1", 3724))
+            if (RealmClass.realm.Start(RealmConfig.BindIP, (int)RealmConfig.BindPort))
             {
                 RealmClass.realm.AcceptConnectionThread();
-                Log.Message(LogType.NORMAL, "RealmServer listening on {0} port {1}.", "127.0.0.1", 3724);
+                Log.Message(LogType.NORMAL, "RealmServer listening on {0} port {1}.", RealmConfig.BindIP, RealmConfig.BindPort);
                 Log.Message(LogType.NORMAL, "RealmServer successfully started!");
             }
             else

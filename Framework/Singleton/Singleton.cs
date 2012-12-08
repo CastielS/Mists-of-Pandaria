@@ -23,24 +23,25 @@ namespace Framework.Singleton
 {
     public static class Singleton
     {
-        static Hashtable ObjectDictionary = new Hashtable();
+        static Hashtable ObjectList = new Hashtable();
         static Object Sync = new Object();
 
         public static T GetInstance<T>() where T : class
         {
+            var typeName = typeof(T).FullName;
+
             lock (Sync)
             {
-                if (ObjectDictionary.ContainsKey(typeof(T).GUID))
-                    return (T)ObjectDictionary[typeof(T).GUID];
+                if (ObjectList.ContainsKey(typeName))
+                    return (T)ObjectList[typeName];
             }
 
-            // Get info from called constructor
             ConstructorInfo constructorInfo = typeof(T).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
             T instance = (T)constructorInfo.Invoke(new object[] { });
 
-            ObjectDictionary.Add(typeof(T).GUID, instance);
+            ObjectList.Add(instance.ToString(), instance);
 
-            return (T)ObjectDictionary[typeof(T).GUID];
+            return (T)ObjectList[typeName];
         }
     }
 }

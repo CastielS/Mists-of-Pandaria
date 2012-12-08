@@ -36,10 +36,10 @@ namespace Framework.Network.Packets
             {
                 foreach (var methodInfo in type.GetMethods())
                 {
-                    foreach (var opcodeAttr in methodInfo.GetCustomAttributes<OpcodeAttribute>())
-                    {
+                    var opcodeAttr = methodInfo.GetCustomAttribute<OpcodeAttribute>();
+
+                    if (opcodeAttr != null)
                         OpcodeHandlers[opcodeAttr.Opcode] = (HandlePacket)Delegate.CreateDelegate(typeof(HandlePacket), methodInfo);
-                    }
                 }
             }
         }

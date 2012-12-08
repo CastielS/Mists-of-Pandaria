@@ -51,7 +51,7 @@ namespace Framework.Network.Realm
             new Thread(AcceptConnection).Start();
         }
 
-        async void AcceptConnection()
+        void AcceptConnection()
         {
             while (listenSocket)
             {
@@ -59,7 +59,7 @@ namespace Framework.Network.Realm
                 if (listener.Pending())
                 {
                     RealmClass realmClient = new RealmClass();
-                    realmClient.clientSocket = await listener.AcceptSocketAsync();
+                    realmClient.clientSocket = listener.AcceptSocket();
 
                     new Thread(realmClient.Recieve).Start();
                 }

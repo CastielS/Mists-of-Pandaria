@@ -34,6 +34,10 @@ namespace Framework.Configuration
         public static string WorldDBDataBase = config.Read("WorldDB.Database", "");
 
         public static uint RealmId = config.Read<uint>("RealmId", 1);
+        
+        public static string BindIP = config.Read("Bind.IP", "0.0.0.0");
+        public static uint BindPort = config.Read<uint>("Bind.Port", 8100);
+
         public static string DataPath = config.Read("DataPath", "./Data/");
 
         public static string GMCommandStart = config.Read("GM.Command.Start", "!");

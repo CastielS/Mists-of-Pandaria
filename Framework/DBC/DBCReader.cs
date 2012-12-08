@@ -81,7 +81,7 @@ namespace Framework.DBC
             }
             catch (FileNotFoundException)
             {
-                Logging.Log.Message(Logging.LogType.ERROR, "Cant Find File {0}.dbc", FileName);
+                Logging.Log.Message(Logging.LogType.ERROR, "Cant Find File {0}", FileName);
                 return null;
             }
             DBCStorage.DBCFileCount += 1;

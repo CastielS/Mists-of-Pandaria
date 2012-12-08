@@ -34,10 +34,10 @@ namespace WorldServer.Game.Chat
             {
                 foreach (var methodInfo in type.GetMethods())
                 {
-                    foreach (var chatAttr in methodInfo.GetCustomAttributes<ChatCommandAttribute>())
-                    {
+                    var chatAttr = methodInfo.GetCustomAttribute<ChatCommandAttribute>();
+                    
+                    if (chatAttr != null)
                         ChatCommands[chatAttr.ChatCommand] = (HandleChatCommand)Delegate.CreateDelegate(typeof(HandleChatCommand), methodInfo);
-                    }
                 }
             }
         }

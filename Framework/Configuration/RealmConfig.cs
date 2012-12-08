@@ -26,5 +26,8 @@ namespace Framework.Configuration
         public static string RealmDBUser = config.Read("RealmDB.User", "");
         public static string RealmDBPassword = config.Read("RealmDB.Password", "");
         public static string RealmDBDataBase = config.Read("RealmDB.Database", "");
+
+        public static string BindIP = config.Read("Bind.IP", "0.0.0.0");
+        public static uint BindPort = config.Read<uint>("Bind.Port", 3724);
     }
 }

@@ -15,14 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using WorldServer.Game.ObjectStores;
 using WorldServer.Network;
 
 namespace WorldServer.Game.Managers
 {
     public class Globals
     {
-        public static CharacterStore CharacterMgr;
         public static ObjectManager ObjectMgr;
         public static SkillManager SkillMgr;
         public static SpellManager SpellMgr;
@@ -30,7 +28,6 @@ namespace WorldServer.Game.Managers
 
         public static void InitializeManager()
         {
-            CharacterMgr = CharacterStore.GetInstance();
             ObjectMgr = ObjectManager.GetInstance();
             SkillMgr = SkillManager.GetInstance();
             SpellMgr = SpellManager.GetInstance();

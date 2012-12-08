@@ -42,25 +42,25 @@ namespace Framework.Cryptography
                                 0xF1, 0x86, 0x59, 0x99, 0x76, 0x02, 0x50, 0xAA, 0xB9, 0x45, 0xE0, 0x9E, 0xDD, 0x2A, 0xA3, 0x45 };            
         }
 
-        [DllImport("LIBEAY32.DLL")]
+        [DllImport("libeay32.dll")]
         private static extern int BN_add(IntPtr r, IntPtr a, IntPtr b);
-        [DllImport("LIBEAY32.DLL", EntryPoint = "BN_bin2bn")]
+        [DllImport("libeay32.dll", EntryPoint = "BN_bin2bn")]
         private static extern IntPtr BN_Bin2BN(byte[] ByteArrayIn, int length, IntPtr to);
-        [DllImport("LIBEAY32.DLL")]
+        [DllImport("libeay32.dll")]
         private static extern int BN_bn2bin(IntPtr a, byte[] to);
-        [DllImport("LIBEAY32.DLL", EntryPoint = "BN_CTX_free")]
+        [DllImport("libeay32.dll", EntryPoint = "BN_CTX_free")]
         private static extern int BN_ctx_free(IntPtr a);
-        [DllImport("LIBEAY32.DLL", EntryPoint = "BN_CTX_new")]
+        [DllImport("libeay32.dll", EntryPoint = "BN_CTX_new")]
         private static extern IntPtr BN_ctx_new();
-        [DllImport("LIBEAY32.DLL")]
+        [DllImport("libeay32.dll")]
         private static extern int BN_div(IntPtr dv, IntPtr r, IntPtr a, IntPtr b, IntPtr ctx);
-        [DllImport("LIBEAY32.DLL", EntryPoint = "BN_free")]
+        [DllImport("libeay32.dll", EntryPoint = "BN_free")]
         private static extern void BN_Free(IntPtr r);
-        [DllImport("LIBEAY32.DLL")]
+        [DllImport("libeay32.dll")]
         private static extern IntPtr BN_mod_exp(IntPtr res, IntPtr a, IntPtr p, IntPtr m, IntPtr ctx);
-        [DllImport("LIBEAY32.DLL")]
+        [DllImport("libeay32.dll")]
         private static extern int BN_mul(IntPtr r, IntPtr a, IntPtr b, IntPtr ctx);
-        [DllImport("LIBEAY32.DLL", EntryPoint = "BN_new")]
+        [DllImport("libeay32.dll", EntryPoint = "BN_new")]
         private static extern IntPtr BN_New();
         public void CalculateB()
         {
@@ -209,7 +209,7 @@ namespace Framework.Cryptography
             BN_Free(this.BNx);
         }
 
-        [DllImport("LIBEAY32.DLL")]
+        [DllImport("libeay32.dll")]
         public static extern int RAND_bytes(byte[] buf, int num);
         private static ArrayList Split(byte[] bo)
         {
