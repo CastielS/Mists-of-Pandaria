@@ -104,7 +104,7 @@ namespace WorldServer.Game.Packets.PacketHandler
         {
             var pChar = session.Character;
 
-            uint zone = packet.ReadUInt32();    // Always 0
+            uint zone = packet.ReadUInt32();
 
             ObjectMgr.SetZone(ref pChar, zone);
         }
