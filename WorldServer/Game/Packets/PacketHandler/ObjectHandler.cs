@@ -20,6 +20,7 @@ using Framework.Network.Packets;
 using WorldServer.Game.Managers;
 using WorldServer.Game.WorldEntities;
 using WorldServer.Network;
+using System;
 
 namespace WorldServer.Game.PacketHandler
 {
@@ -27,10 +28,10 @@ namespace WorldServer.Game.PacketHandler
     {
         public static void HandleUpdateObject(ref WorldClass session)
         {
-            Character character = session.Character;
+            WorldObject character = session.Character;
             PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
 
-            updateObject.WriteUInt16((ushort)character.Map);
+            updateObject.WriteUInt16((ushort)(character as Character).Map);
             updateObject.WriteUInt32(1);
             updateObject.WriteUInt8(1);
             updateObject.WriteGuid(character.Guid);
@@ -49,12 +50,12 @@ namespace WorldServer.Game.PacketHandler
 
             foreach (var s in tempSession)
             {
-                if (character.Zone != s.Value.Character.Zone)
+                if ((character as Character).Zone != s.Value.Character.Zone)
                     continue;
 
                 updateObject = new PacketWriter(LegacyMessage.UpdateObject);
 
-                updateObject.WriteUInt16((ushort)character.Map);
+                updateObject.WriteUInt16((ushort)(character as Character).Map);
                 updateObject.WriteUInt32(1);
                 updateObject.WriteUInt8(1);
                 updateObject.WriteGuid(character.Guid);
@@ -73,12 +74,12 @@ namespace WorldServer.Game.PacketHandler
             {
                 character = s.Value.Character;
 
-                if (character.Zone != session.Character.Zone)
+                if ((character as Character).Zone != session.Character.Zone)
                     continue;
 
                 updateObject = new PacketWriter(LegacyMessage.UpdateObject);
 
-                updateObject.WriteUInt16((ushort)character.Map);
+                updateObject.WriteUInt16((ushort)(character as Character).Map);
                 updateObject.WriteUInt32(1);
                 updateObject.WriteUInt8(1);
                 updateObject.WriteGuid(character.Guid);

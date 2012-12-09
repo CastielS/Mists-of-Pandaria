@@ -24,6 +24,13 @@ namespace WorldServer.Game.WorldEntities
 {
     public class WorldObject
     {
+        // General object data
+        public UInt64 Guid { get; set; }
+        public Single X { get; set; }
+        public Single Y { get; set; }
+        public Single Z { get; set; }
+        public Single O { get; set; }
+
         public bool IsInWorld { get; set; }
         public uint Blocks;
         public byte[] Mask;

@@ -27,7 +27,6 @@ namespace WorldServer.Game.WorldEntities
     public class Character : WorldObject
     {
         public UInt32 AccountId;
-        public UInt64 Guid;
         public String Name;
         public Byte Race;
         public Byte Class;
@@ -40,10 +39,6 @@ namespace WorldServer.Game.WorldEntities
         public Byte Level;
         public UInt32 Zone;
         public UInt32 Map;
-        public Single X;
-        public Single Y;
-        public Single Z;
-        public Single O;
         public UInt64 GuildGuid;
         public UInt32 PetDisplayInfo;
         public UInt32 PetLevel;

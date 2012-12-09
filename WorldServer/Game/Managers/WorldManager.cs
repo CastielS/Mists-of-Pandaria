@@ -97,10 +97,10 @@ namespace WorldServer.Game.Managers
             }
         }
 
-        public void WriteUpdateObjectMovement(ref PacketWriter packet, ref Character character, UpdateFlag updateFlags)
+        public void WriteUpdateObjectMovement(ref PacketWriter packet, ref WorldObject wObject, UpdateFlag updateFlags)
         {
             ObjectMovementValues values = new ObjectMovementValues(updateFlags);
-            BitPack BitPack = new BitPack(packet, character.Guid, character.GuildGuid);
+            BitPack BitPack = new BitPack(packet, wObject.Guid);
 
             BitPack.Write(0);                       // New in 5.1.0, 654, Unknown
             BitPack.Write(values.Bit0);
@@ -201,13 +201,13 @@ namespace WorldServer.Game.Managers
 
                 BitPack.WriteGuidBytes(1);
                 packet.WriteFloat((float)MovementSpeed.TurnSpeed);
-                packet.WriteFloat(character.Y);
+                packet.WriteFloat(wObject.Y);
                 BitPack.WriteGuidBytes(3);
-                packet.WriteFloat(character.Z);
-                packet.WriteFloat(character.O);
+                packet.WriteFloat(wObject.Z);
+                packet.WriteFloat(wObject.O);
                 packet.WriteFloat((float)MovementSpeed.RunBackSpeed);
                 BitPack.WriteGuidBytes(0, 6);
-                packet.WriteFloat(character.X);
+                packet.WriteFloat(wObject.X);
                 packet.WriteFloat((float)MovementSpeed.WalkSpeed);
                 BitPack.WriteGuidBytes(5);
                 packet.WriteUInt32(0);
