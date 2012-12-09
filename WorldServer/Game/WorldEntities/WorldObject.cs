@@ -26,10 +26,7 @@ namespace WorldServer.Game.WorldEntities
     {
         // General object data
         public UInt64 Guid { get; set; }
-        public Single X { get; set; }
-        public Single Y { get; set; }
-        public Single Z { get; set; }
-        public Single O { get; set; }
+        public Vector4 Position = new Vector4();
 
         public bool IsInWorld { get; set; }
         public uint Blocks;

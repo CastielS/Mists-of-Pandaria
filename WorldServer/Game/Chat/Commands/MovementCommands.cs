@@ -243,7 +243,7 @@ namespace WorldServer.Game.Chat.Commands
             var session = WorldMgr.Session;
             var pChar = session.Character;
 
-            var message = String.Format("Your position is X: {0}, Y: {1}, Z: {2}, W(O): {3}, Map: {4}", pChar.X, pChar.Y, pChar.Z, pChar.O, pChar.Map);
+            var message = String.Format("Your position is X: {0}, Y: {1}, Z: {2}, W(O): {3}, Map: {4}", pChar.Position.X, pChar.Position.Y, pChar.Position.Z, pChar.Position.W, pChar.Map);
             ChatHandler.SendMessageByType(ref session, 0, 0, message);
         }
 
@@ -259,7 +259,7 @@ namespace WorldServer.Game.Chat.Commands
             if (result.Count == 0)
             {
                 DB.World.Execute("INSERT INTO teleport_locations (location, x, y, z, o, map) " +
-                                 "VALUES (?, ?, ?, ?, ?, ?)", location, pChar.X, pChar.Y, pChar.Z, pChar.O, pChar.Map);
+                                 "VALUES (?, ?, ?, ?, ?, ?)", location, pChar.Position.X, pChar.Position.Y, pChar.Position.Z, pChar.Position.W, pChar.Map);
             }
             else
                 ChatHandler.SendMessageByType(ref session, 0, 0, String.Format("Teleport location '{0}' already exist.", location));

@@ -44,10 +44,7 @@ namespace WorldServer.Game.Managers
 
         public void SetPosition(ref Character pChar, Vector4 vector, bool dbUpdate = true)
         {
-            pChar.X = vector.X;
-            pChar.Y = vector.Y;
-            pChar.Z = vector.Z;
-            pChar.O = vector.W;
+            pChar.Position = vector;
 
             Globals.WorldMgr.Sessions[pChar.Guid].Character = pChar;
 
@@ -68,7 +65,7 @@ namespace WorldServer.Game.Managers
 
         public void SavePositionToDB(Character pChar)
         {
-            DB.Characters.Execute("UPDATE characters SET x = ?, y = ?, z = ?, o = ?, map = ? WHERE guid = ?", pChar.X, pChar.Y, pChar.Z, pChar.O, pChar.Map, pChar.Guid);
+            DB.Characters.Execute("UPDATE characters SET x = ?, y = ?, z = ?, o = ?, map = ? WHERE guid = ?", pChar.Position.X, pChar.Position.Y, pChar.Position.Z, pChar.Position.W, pChar.Map, pChar.Guid);
         }
     }
 }

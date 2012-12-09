@@ -201,13 +201,13 @@ namespace WorldServer.Game.Managers
 
                 BitPack.WriteGuidBytes(1);
                 packet.WriteFloat((float)MovementSpeed.TurnSpeed);
-                packet.WriteFloat(wObject.Y);
+                packet.WriteFloat(wObject.Position.Y);
                 BitPack.WriteGuidBytes(3);
-                packet.WriteFloat(wObject.Z);
-                packet.WriteFloat(wObject.O);
+                packet.WriteFloat(wObject.Position.Z);
+                packet.WriteFloat(wObject.Position.W);
                 packet.WriteFloat((float)MovementSpeed.RunBackSpeed);
                 BitPack.WriteGuidBytes(0, 6);
-                packet.WriteFloat(wObject.X);
+                packet.WriteFloat(wObject.Position.X);
                 packet.WriteFloat((float)MovementSpeed.WalkSpeed);
                 BitPack.WriteGuidBytes(5);
                 packet.WriteUInt32(0);

@@ -68,10 +68,10 @@ namespace WorldServer.Game.WorldEntities
             Level          = result.Read<Byte>(0, "Level");
             Zone           = result.Read<UInt32>(0, "Zone");
             Map            = result.Read<UInt32>(0, "Map");
-            X              = result.Read<Single>(0, "X");
-            Y              = result.Read<Single>(0, "Y");
-            Z              = result.Read<Single>(0, "Z");
-            O              = result.Read<Single>(0, "O");
+            Position.X     = result.Read<Single>(0, "X");
+            Position.Y     = result.Read<Single>(0, "Y");
+            Position.Z     = result.Read<Single>(0, "Z");
+            Position.W     = result.Read<Single>(0, "O");
             GuildGuid      = result.Read<UInt64>(0, "GuildGuid");
             PetDisplayInfo = result.Read<UInt32>(0, "PetDisplayId");
             PetLevel       = result.Read<UInt32>(0, "PetLevel");
