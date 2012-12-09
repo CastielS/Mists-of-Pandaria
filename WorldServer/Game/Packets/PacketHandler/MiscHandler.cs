@@ -98,5 +98,15 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             Log.Message(LogType.DEBUG, "Player {0} (Guid: {1}) is active.", session.Character.Name, session.Character.Guid);
         }
+
+        [Opcode(ClientMessage.ZoneUpdate, "16309")]
+        public static void HandleZoneUpdate(ref PacketReader packet, ref WorldClass session)
+        {
+            var pChar = session.Character;
+
+            uint zone = packet.ReadUInt32();    // Always 0
+
+            ObjectMgr.SetZone(ref pChar, zone);
+        }
     }
 }

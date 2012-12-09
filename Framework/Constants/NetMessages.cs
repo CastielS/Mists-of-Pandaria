@@ -502,6 +502,7 @@ namespace Framework.Constants
         ActivePlayer                             = 0xF84,
         NameCache                                = 0x1EC,
         RealmCache                               = 0xA4D,
+        ZoneUpdate                               = 0x88D,
         #endregion
 
         #region ChatMessages

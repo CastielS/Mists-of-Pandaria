@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Framework.Database;
 using Framework.ObjectDefines;
 using Framework.Singleton;
 using System;
 using System.Collections.Generic;
 using WorldServer.Game.WorldEntities;
-using Framework.Database;
 
 namespace WorldServer.Game.Managers
 {
@@ -63,9 +63,24 @@ namespace WorldServer.Game.Managers
                 SavePositionToDB(pChar);
         }
 
+        public void SetZone(ref Character pChar, uint zoneId, bool dbUpdate = true)
+        {
+            pChar.Zone = zoneId;
+
+            Globals.WorldMgr.Sessions[pChar.Guid].Character = pChar;
+
+            if (dbUpdate)
+                SaveZoneToDB(pChar);
+        }
+
         public void SavePositionToDB(Character pChar)
         {
             DB.Characters.Execute("UPDATE characters SET x = ?, y = ?, z = ?, o = ?, map = ? WHERE guid = ?", pChar.Position.X, pChar.Position.Y, pChar.Position.Z, pChar.Position.W, pChar.Map, pChar.Guid);
+        }
+
+        public void SaveZoneToDB(Character pChar)
+        {
+            DB.Characters.Execute("UPDATE characters SET zone = ? WHERE guid = ?", pChar.Zone, pChar.Guid);
         }
     }
 }
