@@ -40,7 +40,7 @@ namespace Framework.Configuration
                 ConfigContent = File.ReadAllLines(config, Encoding.UTF8);
         }
 
-        public T Read<T>(string name, T value)
+        public T Read<T>(string name, T value, bool hex = false)
         {
             string nameValue = null;
             T trueValue = (T)Convert.ChangeType(value, typeof(T));
@@ -70,6 +70,9 @@ namespace Framework.Configuration
             {
                 Log.Message(LogType.ERROR, "Error in {0} in line {1}", ConfigFile, lineCounter.ToString());
             }
+
+            if (hex)
+                return (T)Convert.ChangeType(Convert.ToInt32(nameValue, 16), typeof(T));
 
             return (T)Convert.ChangeType(nameValue, typeof(T));
         }

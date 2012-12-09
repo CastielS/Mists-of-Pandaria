@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Framework.Configuration;
 using System;
 using DefaultConsole = System.Console;
 
@@ -64,13 +65,14 @@ namespace Framework.Logging
                     break;
             }
 
-            if (type.Equals(LogType.INIT) | type.Equals(LogType.DEFAULT))
-                DefaultConsole.WriteLine(text, args);
-            else if (type.Equals(LogType.DUMP) || type.Equals(LogType.CMD))
-                DefaultConsole.WriteLine(text, args);
-            else
+            if ((WorldConfig.LogLevel & type) == type)
             {
-                DefaultConsole.WriteLine("[" + DateTime.Now.ToLongTimeString() + "] " + text, args);
+                if (type.Equals(LogType.INIT) | type.Equals(LogType.DEFAULT))
+                    DefaultConsole.WriteLine(text, args);
+                else if (type.Equals(LogType.DUMP) || type.Equals(LogType.CMD))
+                    DefaultConsole.WriteLine(text, args);
+                else
+                    DefaultConsole.WriteLine("[" + DateTime.Now.ToLongTimeString() + "] " + text, args);
             }
         }
     }

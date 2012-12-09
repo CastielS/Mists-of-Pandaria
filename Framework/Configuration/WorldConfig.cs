@@ -1,4 +1,5 @@
-﻿/*
+﻿using Framework.Logging;
+/*
  * Copyright (C) 2012 Arctium <http://>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -41,5 +42,7 @@ namespace Framework.Configuration
         public static string DataPath = config.Read("DataPath", "./Data/");
 
         public static string GMCommandStart = config.Read("GM.Command.Start", "!");
+
+        public static LogType LogLevel = (LogType)config.Read<uint>("LogLevel", 0, true);
     }
 }

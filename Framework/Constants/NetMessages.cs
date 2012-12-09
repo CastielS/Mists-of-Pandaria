@@ -476,6 +476,8 @@ namespace Framework.Constants
         #endregion
 
         #region WorldEnter
+        LoadingScreenNotify                      = 0x006,
+        ViolenceLevel                            = 0x056,
         PlayerLogin                              = 0xEBA,
         #endregion
 
@@ -497,6 +499,7 @@ namespace Framework.Constants
         EnableNagle                              = -1,
         SuspendTokenResponse                     = -1,
         RequestUITime                            = -1,
+        ActivePlayer                             = 0xF84,
         NameCache                                = 0x1EC,
         RealmCache                               = 0xA4D,
         #endregion

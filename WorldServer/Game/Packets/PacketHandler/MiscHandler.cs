@@ -71,5 +71,32 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             session.Send(cacheVersion);
         }
+
+        [Opcode(ClientMessage.LoadingScreenNotify, "16309")]
+        public static void HandleLoadingScreenNotify(ref PacketReader packet, ref WorldClass session)
+        {
+            BitUnpack BitUnpack = new BitUnpack(packet);
+
+            uint mapId = packet.ReadUInt32();
+            bool loadingScreenState = BitUnpack.GetBit();
+
+            Log.Message(LogType.DEBUG, "Loading screen for map '{0}' is {1}.", mapId, loadingScreenState ? "enabled" : "disabled");
+        }
+
+        [Opcode(ClientMessage.ViolenceLevel, "16309")]
+        public static void HandleViolenceLevel(ref PacketReader packet, ref WorldClass session)
+        {
+            byte violenceLevel = packet.ReadUInt8();
+
+            Log.Message(LogType.DEBUG, "Violence level from account '{0} (Id: {1})' is {2}.", session.Account.Name, session.Account.Id, violenceLevel);
+        }
+
+        [Opcode(ClientMessage.ActivePlayer, "16309")]
+        public static void HandleActivePlayer(ref PacketReader packet, ref WorldClass session)
+        {
+            byte active = packet.ReadUInt8();    // Always 0
+
+            Log.Message(LogType.DEBUG, "Player {0} (Guid: {1}) is active.", session.Character.Name, session.Character.Guid);
+        }
     }
 }
