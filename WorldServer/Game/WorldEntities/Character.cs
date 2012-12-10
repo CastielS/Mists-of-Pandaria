@@ -38,7 +38,6 @@ namespace WorldServer.Game.WorldEntities
         public Byte FacialHair;
         public Byte Level;
         public UInt32 Zone;
-        public UInt32 Map;
         public UInt64 GuildGuid;
         public UInt32 PetDisplayInfo;
         public UInt32 PetLevel;

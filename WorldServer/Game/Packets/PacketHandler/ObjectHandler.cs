@@ -20,7 +20,6 @@ using Framework.Network.Packets;
 using WorldServer.Game.Managers;
 using WorldServer.Game.WorldEntities;
 using WorldServer.Network;
-using System;
 
 namespace WorldServer.Game.PacketHandler
 {
@@ -31,7 +30,7 @@ namespace WorldServer.Game.PacketHandler
             WorldObject character = session.Character;
             PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
 
-            updateObject.WriteUInt16((ushort)(character as Character).Map);
+            updateObject.WriteUInt16((ushort)character.ToCharacter().Map);
             updateObject.WriteUInt32(1);
             updateObject.WriteUInt8(1);
             updateObject.WriteGuid(character.Guid);
@@ -93,6 +92,8 @@ namespace WorldServer.Game.PacketHandler
 
                 session.Send(updateObject);
             }
+
+            character.AddSpawnsToWorld(ref session);
         }
 
         public static void HandleObjectDestroy(ref WorldClass session)

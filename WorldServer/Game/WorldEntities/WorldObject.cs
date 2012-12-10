@@ -15,18 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Framework.Constants;
 using Framework.Network.Packets;
+using Framework.ObjectDefines;
 using System;
 using System.Collections;
-using Framework.ObjectDefines;
+using WorldServer.Game.Managers;
+using WorldServer.Game.Spawns;
+using WorldServer.Network;
 
 namespace WorldServer.Game.WorldEntities
 {
     public class WorldObject
     {
         // General object data
-        public UInt64 Guid { get; set; }
-        public Vector4 Position = new Vector4();
+        public UInt64 Guid;
+        public Vector4 Position;
+        public UInt32 Map;
 
         public bool IsInWorld { get; set; }
         public uint Blocks;
@@ -142,14 +147,56 @@ namespace WorldServer.Game.WorldEntities
             return (Mask[index >> 3] & 1 << (index & 0x7)) != 0;
         }
 
-        public void AddToWorld()
+        public void AddSpawnsToWorld(ref WorldClass session)
         {
+            var pChar = session.Character;
 
+            PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
+            UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+
+            if (Globals.SpawnMgr.Spawns.Count > 0)
+            {
+
+                foreach (var s in Globals.SpawnMgr.Spawns)
+                {
+                    WorldObject spawn = s.Key as CreatureSpawn;
+                    spawn.ToCreature().SetCreatureFields();
+
+                    var data = s.Value as Creature;
+
+                    if (spawn.Map != pChar.Map)
+                        continue;
+
+                    updateObject.WriteUInt16((ushort)spawn.Map);
+                    updateObject.WriteUInt32(1);
+                    updateObject.WriteUInt8(1);
+                    updateObject.WriteGuid(spawn.Guid);
+                    updateObject.WriteUInt8(3);
+
+                    Globals.WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref spawn, updateFlags);
+
+                    spawn.WriteUpdateFields(ref updateObject);
+                    spawn.WriteDynamicUpdateFields(ref updateObject);
+                }
+
+                session.Send(updateObject);
+            }
         }
 
         public void RemoveFromWorld()
         {
 
         }
+
+        public Character ToCharacter()
+        {
+            return this as Character;
+        }
+
+        public CreatureSpawn ToCreature()
+        {
+            return this as CreatureSpawn;
+        }
+
     }
 }

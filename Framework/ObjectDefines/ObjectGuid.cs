@@ -15,23 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using WorldServer.Network;
+using Framework.Constants;
+using System;
 
-namespace WorldServer.Game.Managers
+namespace Framework.ObjectDefines
 {
-    public class Globals
+    public class ObjectGuid
     {
-        public static ObjectManager ObjectMgr;
-        public static SkillManager SkillMgr;
-        public static SpellManager SpellMgr;
-        public static WorldManager WorldMgr;
+        public UInt64 Guid { get; set; }
 
-        public static void InitializeManager()
+        public ObjectGuid(ulong low, uint id, HighGuidType highType)
         {
-            ObjectMgr = ObjectManager.GetInstance();
-            SkillMgr = SkillManager.GetInstance();
-            SpellMgr = SpellManager.GetInstance();
-            WorldMgr = WorldManager.GetInstance();
+            Guid = (ulong)(low | ((ulong)id << 32) | (ulong)highType << ((highType == HighGuidType.Guild || highType == HighGuidType.Corpse) ? 48 : 52));
         }
     }
 }

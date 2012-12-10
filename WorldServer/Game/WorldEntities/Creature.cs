@@ -15,10 +15,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Framework.Database;
+using Framework.ObjectDefines;
+using System;
 
 namespace WorldServer.Game.WorldEntities
 {
-    public class Creature : WorldObject
+    public class Creature : ISpawnData
     {
+        public UInt32 Id;
+        public String Name;
+        public String SubName;
+        public String IconName;
+        public UInt32 Health;
+        public Byte Level;
+        public UInt32 DisplayID;
+        public Byte Class;
+        public UInt32 Faction;
+        public Single Scale;
+        public UInt32 Type;
+        public UInt32 Flags;
+        public UInt32 Flags2;
+        public UInt32 NpcFlags;
+
+        public Creature() { }
+        public Creature(uint id)
+        {
+            SQLResult result = DB.World.Select("SELECT * FROM creature_data WHERE id = ?", id);
+
+            if (result.Count != 0)
+            {
+                Id        = result.Read<UInt32>(0, "Id");
+                Name      = result.Read<String>(0, "Name");
+                SubName   = result.Read<String>(0, "SubName");
+                IconName  = result.Read<String>(0, "IconName");
+                Health    = result.Read<UInt32>(0, "Health");
+                Level     = result.Read<Byte>(0, "Level");
+                DisplayID = result.Read<UInt32>(0, "DisplayID");
+                Class     = result.Read<Byte>(0, "Class");
+                Faction   = result.Read<UInt32>(0, "Faction");
+                Scale     = result.Read<Single>(0, "Scale");
+                Type      = result.Read<Byte>(0, "Type");
+                Flags     = result.Read<UInt32>(0, "Flags");
+                Flags2    = result.Read<UInt32>(0, "Flags2");
+                NpcFlags  = result.Read<UInt32>(0, "NpcFlags");
+            }
+        }
     }
 }
