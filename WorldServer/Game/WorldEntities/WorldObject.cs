@@ -151,7 +151,6 @@ namespace WorldServer.Game.WorldEntities
         {
             var pChar = session.Character;
 
-            PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
             UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
 
             if (Globals.SpawnMgr.Spawns.Count > 0)
@@ -167,6 +166,8 @@ namespace WorldServer.Game.WorldEntities
                     if (spawn.Map != pChar.Map)
                         continue;
 
+                    PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
+
                     updateObject.WriteUInt16((ushort)spawn.Map);
                     updateObject.WriteUInt32(1);
                     updateObject.WriteUInt8(1);
@@ -177,9 +178,9 @@ namespace WorldServer.Game.WorldEntities
 
                     spawn.WriteUpdateFields(ref updateObject);
                     spawn.WriteDynamicUpdateFields(ref updateObject);
-                }
 
-                session.Send(updateObject);
+                    session.Send(updateObject);
+                }
             }
         }
 

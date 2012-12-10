@@ -36,14 +36,12 @@ namespace WorldServer.Game.Managers
 
         public void Add(Creature creature)
         {
-            if (!CreatureDataList.Contains(creature))
-                CreatureDataList.Add(creature);
+            CreatureDataList.Add(creature);
         }
 
         public void Remove(Creature creature)
         {
-            if (CreatureDataList.Contains(creature))
-                CreatureDataList.Remove(creature);
+            CreatureDataList.Remove(creature);
         }
 
         public List<Creature> GetCreatures()
