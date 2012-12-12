@@ -24,7 +24,7 @@ namespace WorldServer.Game.PacketHandler
 {
     public class TimeHandler : Globals
     {
-        [Opcode(ClientMessage.ReadyForAccountDataTimes, "16309")]
+        [Opcode(ClientMessage.ReadyForAccountDataTimes, "16357")]
         public static void HandleAccountDataInitialized(ref PacketReader packet, ref WorldClass session)
         {
             WorldMgr.WriteAccountData(AccountDataMasks.GlobalCacheMask, ref session);
@@ -40,7 +40,7 @@ namespace WorldServer.Game.PacketHandler
             session.Send(uiTime);
         }
 
-        [Opcode(ClientMessage.SetRealmSplitState, "16309")]
+        [Opcode(ClientMessage.SetRealmSplitState, "16357")]
         public static void HandleRealmSplitStateResponse(ref PacketReader packet, ref WorldClass session)
         {
             uint realmSplitState = 0;

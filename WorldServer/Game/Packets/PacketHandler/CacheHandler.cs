@@ -26,7 +26,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 {
     public class CacheHandler
     {
-        [Opcode(ClientMessage.NameCache, "16309")]
+        [Opcode(ClientMessage.NameCache, "16357")]
         public static void HandleNameCache(ref PacketReader packet, ref WorldClass session)
         {
             Character pChar = session.Character;
@@ -48,7 +48,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             session.Send(nameCache);
         }
 
-        [Opcode(ClientMessage.RealmCache, "16309")]
+        [Opcode(ClientMessage.RealmCache, "16357")]
         public static void HandleRealmCache(ref PacketReader packet, ref WorldClass session)
         {
             Character pChar = session.Character;

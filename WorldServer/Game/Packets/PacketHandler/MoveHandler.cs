@@ -29,7 +29,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 {
     public class MoveHandler : Globals
     {
-        [Opcode(ClientMessage.MoveStartForward, "16309")]
+        [Opcode(ClientMessage.MoveStartForward, "16357")]
         public static void HandleMoveStartForward(ref PacketReader packet, ref WorldClass session)
         {
             ObjectMovementValues movementValues = new ObjectMovementValues();
@@ -140,7 +140,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             HandleMoveUpdate(guid, movementValues, vector);
         }
 
-        [Opcode(ClientMessage.MoveStartBackward, "16309")]
+        [Opcode(ClientMessage.MoveStartBackward, "16357")]
         public static void HandleMoveStartBackward(ref PacketReader packet, ref WorldClass session)
         {
             ObjectMovementValues movementValues = new ObjectMovementValues();
@@ -258,7 +258,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             HandleMoveUpdate(guid, movementValues, vector);
         }
 
-        [Opcode(ClientMessage.MoveHeartBeat, "16309")]
+        [Opcode(ClientMessage.MoveHeartBeat, "16357")]
         public static void HandleMoveHeartBeat(ref PacketReader packet, ref WorldClass session)
         {
             ObjectMovementValues movementValues = new ObjectMovementValues();
@@ -376,7 +376,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             HandleMoveUpdate(guid, movementValues, vector);
         }
 
-        [Opcode(ClientMessage.MoveStop, "16309")]
+        [Opcode(ClientMessage.MoveStop, "16357")]
         public static void HandleMoveStop(ref PacketReader packet, ref WorldClass session)
         {
             ObjectMovementValues movementValues = new ObjectMovementValues();
@@ -485,7 +485,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             HandleMoveUpdate(guid, movementValues, vector);
         }
 
-        [Opcode(ClientMessage.MoveStartTurnLeft, "16309")]
+        [Opcode(ClientMessage.MoveStartTurnLeft, "16357")]
         public static void HandleMoveStartTurnLeft(ref PacketReader packet, ref WorldClass session)
         {
             ObjectMovementValues movementValues = new ObjectMovementValues();
@@ -594,7 +594,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             HandleMoveUpdate(guid, movementValues, vector);
         }
 
-        [Opcode(ClientMessage.MoveStartTurnRight, "16309")]
+        [Opcode(ClientMessage.MoveStartTurnRight, "16357")]
         public static void HandleMoveStartTurnRight(ref PacketReader packet, ref WorldClass session)
         {
             ObjectMovementValues movementValues = new ObjectMovementValues();
@@ -709,7 +709,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             HandleMoveUpdate(guid, movementValues, vector);
         }
 
-        [Opcode(ClientMessage.MoveStopTurn, "16309")]
+        [Opcode(ClientMessage.MoveStopTurn, "16357")]
         public static void HandleMoveStopTurn(ref PacketReader packet, ref WorldClass session)
         {
             ObjectMovementValues movementValues = new ObjectMovementValues();

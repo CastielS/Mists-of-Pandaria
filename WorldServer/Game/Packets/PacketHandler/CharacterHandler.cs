@@ -33,7 +33,7 @@ namespace WorldServer.Game.PacketHandler
 {
     public class CharacterHandler : Globals
     {
-        [Opcode(ClientMessage.EnumCharacters, "16309")]
+        [Opcode(ClientMessage.EnumCharacters, "16357")]
         public static void HandleEnumCharactersResult(ref PacketReader packet, ref WorldClass session)
         {
             DB.Realms.Execute("UPDATE accounts SET online = 1 WHERE id = ?", session.Account.Id);
@@ -153,7 +153,7 @@ namespace WorldServer.Game.PacketHandler
             session.Send(enumCharacters);
         }
 
-        [Opcode(ClientMessage.RequestCharCreate, "16309")]
+        [Opcode(ClientMessage.RequestCharCreate, "16357")]
         public static void HandleResponseCharacterCreate(ref PacketReader packet, ref WorldClass session)
         {
             BitUnpack BitUnpack = new BitUnpack(packet);
@@ -206,7 +206,7 @@ namespace WorldServer.Game.PacketHandler
             session.Send(writer);
         }
 
-        [Opcode(ClientMessage.RequestCharDelete, "16309")]
+        [Opcode(ClientMessage.RequestCharDelete, "16357")]
         public static void HandleResponseCharacterDelete(ref PacketReader packet, ref WorldClass session)
         {
             UInt64 guid = packet.ReadUInt64();
@@ -220,7 +220,7 @@ namespace WorldServer.Game.PacketHandler
             DB.Characters.Execute("DELETE FROM character_skills WHERE guid = ?", guid);
         }
 
-        [Opcode(ClientMessage.RequestRandomCharacterName, "16309")]
+        [Opcode(ClientMessage.RequestRandomCharacterName, "16357")]
         public static void HandleGenerateRandomCharacterNameResult(ref PacketReader packet, ref WorldClass session)
         {
             byte gender = packet.ReadByte();
@@ -249,7 +249,7 @@ namespace WorldServer.Game.PacketHandler
             session.Send(writer);
         }
 
-        [Opcode(ClientMessage.PlayerLogin, "16309")]
+        [Opcode(ClientMessage.PlayerLogin, "16357")]
         public static void HandlePlayerLogin(ref PacketReader packet, ref WorldClass session)
         {
             byte[] guidMask = { 5, 7, 6, 1, 2, 3, 4, 0 };

@@ -25,7 +25,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 {
     public class LogoutHandler : Globals
     {
-        [Opcode(ClientMessage.Logout, "16309")]
+        [Opcode(ClientMessage.Logout, "16357")]
         public static void HandleLogoutComplete(ref PacketReader packet, ref WorldClass session)
         {
             var pChar = session.Character;

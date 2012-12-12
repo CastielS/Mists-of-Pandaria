@@ -30,7 +30,7 @@ namespace WorldServer.Game.PacketHandler
 {
     public class AuthenticationHandler : Globals
     {
-        [Opcode(ClientMessage.TransferInitiate, "16309")]
+        [Opcode(ClientMessage.TransferInitiate, "16357")]
         public static void HandleAuthChallenge(ref PacketReader packet, ref WorldClass session)
         {
             PacketWriter authChallenge = new PacketWriter(JAMCCMessage.AuthChallenge, true);
@@ -45,7 +45,7 @@ namespace WorldServer.Game.PacketHandler
             session.Send(authChallenge);
         }
 
-        [Opcode(ClientMessage.AuthSession, "16309")]
+        [Opcode(ClientMessage.AuthSession, "16357")]
         public static void HandleAuthResponse(ref PacketReader packet, ref WorldClass session)
         {
             BitUnpack BitUnpack = new BitUnpack(packet);
