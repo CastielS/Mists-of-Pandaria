@@ -21,23 +21,25 @@ using Framework.Singleton;
 using System;
 using System.Collections.Generic;
 using WorldServer.Game.Spawns;
+using WorldServer.Game.WorldEntities;
+using Framework.Logging;
 
 namespace WorldServer.Game.Managers
 {
     public sealed class SpawnManager : SingletonBase<SpawnManager>
     {
-        public Dictionary<ISpawn, ISpawnData> Spawns;
+        public Dictionary<CreatureSpawn, Creature> CreatureSpawns;
 
         SpawnManager()
         {
-            Spawns = new Dictionary<ISpawn, ISpawnData>();
+            CreatureSpawns = new Dictionary<CreatureSpawn, Creature>();
 
             Initialize();
         }
 
-        public void AddSpawn(ISpawn spawn, ref ISpawnData data)
+        public void AddSpawn(CreatureSpawn spawn, ref Creature data)
         {
-            Spawns.Add(spawn, data);
+            CreatureSpawns.Add(spawn, data);
         }
 
         public void LoadCreatureSpawns()
@@ -46,11 +48,10 @@ namespace WorldServer.Game.Managers
 
             for (int i = 0; i < result.Count; i++)
             {
-                UInt32 id = result.Read<UInt32>(i, "Id");
                 CreatureSpawn spawn = new CreatureSpawn()
                 {
                     Guid = result.Read<UInt64>(i, "Guid"),
-                    Id   = result.Read<UInt32>(i, "Id"),
+                    Id    = result.Read<Int32>(i, "Id"),
 
                     Position = new Vector4()
                     {
@@ -63,13 +64,15 @@ namespace WorldServer.Game.Managers
                     Map = result.Read<UInt32>(i, "Map")
                 };
 
-                spawn.CreateFullGuid();
-                spawn.CreateData();
+                Creature data = Globals.DataMgr.FindData(spawn.Id);
 
-                ISpawnData data = Globals.DataMgr.FindData(id);
+                spawn.CreateFullGuid();
+                spawn.CreateData(data);
 
                 AddSpawn(spawn, ref data);
             }
+
+            Log.Message(LogType.MISC, "Loaded {0} creature spawns.", CreatureSpawns.Count);
         }
 
         public void Initialize()

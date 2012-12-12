@@ -16,49 +16,68 @@
  */
 
 using Framework.Database;
-using Framework.ObjectDefines;
 using System;
+using WorldServer.Game.ObjectDefines;
 
 namespace WorldServer.Game.WorldEntities
 {
-    public class Creature : ISpawnData
+    public class Creature
     {
-        public UInt32 Id;
-        public String Name;
-        public String SubName;
-        public String IconName;
-        public UInt32 Health;
-        public Byte Level;
-        public UInt32 DisplayID;
-        public Byte Class;
-        public UInt32 Faction;
-        public Single Scale;
-        public UInt32 Type;
-        public UInt32 Flags;
-        public UInt32 Flags2;
-        public UInt32 NpcFlags;
+        public CreatureStats Stats;
+        public CreatureData Data;
 
         public Creature() { }
-        public Creature(uint id)
+        public Creature(int id)
         {
-            SQLResult result = DB.World.Select("SELECT * FROM creature_data WHERE id = ?", id);
+            SQLResult result = DB.World.Select("SELECT * FROM creature_stats WHERE id = ?", id);
 
             if (result.Count != 0)
             {
-                Id        = result.Read<UInt32>(0, "Id");
-                Name      = result.Read<String>(0, "Name");
-                SubName   = result.Read<String>(0, "SubName");
-                IconName  = result.Read<String>(0, "IconName");
-                Health    = result.Read<UInt32>(0, "Health");
-                Level     = result.Read<Byte>(0, "Level");
-                DisplayID = result.Read<UInt32>(0, "DisplayID");
-                Class     = result.Read<Byte>(0, "Class");
-                Faction   = result.Read<UInt32>(0, "Faction");
-                Scale     = result.Read<Single>(0, "Scale");
-                Type      = result.Read<Byte>(0, "Type");
-                Flags     = result.Read<UInt32>(0, "Flags");
-                Flags2    = result.Read<UInt32>(0, "Flags2");
-                NpcFlags  = result.Read<UInt32>(0, "NpcFlags");
+                Stats = new CreatureStats();
+
+                Stats.Id       = result.Read<Int32>(0, "Id");
+                Stats.Name     = result.Read<String>(0, "Name");
+                Stats.SubName  = result.Read<String>(0, "SubName");
+                Stats.IconName = result.Read<String>(0, "IconName");
+
+                for (int i = 0; i < Stats.Flag.Capacity; i++)
+                    Stats.Flag.Add(result.Read<Int32>(0, "Flag", i));
+
+                Stats.Type   = result.Read<Int32>(0, "Type");
+                Stats.Family = result.Read<Int32>(0, "Family");
+                Stats.Rank   = result.Read<Int32>(0, "Rank");
+
+                for (int i = 0; i < Stats.QuestKillNpcId.Capacity; i++)
+                    Stats.QuestKillNpcId.Add(result.Read<Int32>(0, "QuestKillNpcId", i));
+
+                for (int i = 0; i < Stats.DisplayInfoId.Capacity; i++)
+                    Stats.DisplayInfoId.Add(result.Read<Int32>(0, "DisplayInfoId", i));
+
+                Stats.HealthModifier = result.Read<Single>(0, "HealthModifier");
+                Stats.PowerModifier  = result.Read<Single>(0, "PowerModifier");
+                Stats.RacialLeader   = result.Read<Byte>(0, "RacialLeader");
+
+                for (int i = 0; i < Stats.QuestItemId.Capacity; i++)
+                    Stats.QuestItemId.Add(result.Read<Int32>(0, "QuestItemId", i));
+
+                Stats.MovementInfoId    = result.Read<Int32>(0, "MovementInfoId");
+                Stats.ExpansionRequired = result.Read<Int32>(0, "ExpansionRequired");
+            }
+
+            result = DB.World.Select("SELECT * FROM creature_data WHERE id = ?", id);
+
+            if (result.Count != 0)
+            {
+                Data = new CreatureData();
+
+                Data.Health     = result.Read<Int32>(0, "Health");
+                Data.Level      = result.Read<Byte>(0, "Level");
+                Data.Class      = result.Read<Byte>(0, "Class");
+                Data.Faction    = result.Read<Int32>(0, "Faction");
+                Data.Scale      = result.Read<Int32>(0, "Scale");
+                Data.UnitFlags  = result.Read<Int32>(0, "UnitFlags");
+                Data.UnitFlags2 = result.Read<Int32>(0, "UnitFlags2");
+                Data.NpcFlags   = result.Read<Int32>(0, "NpcFlags");
             }
         }
     }

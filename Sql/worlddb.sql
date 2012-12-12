@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50519
 File Encoding         : 65001
 
-Date: 2012-12-10 06:13:54
+Date: 2012-12-12 20:06:57
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,26 +20,22 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `creature_data`;
 CREATE TABLE `creature_data` (
-  `id` int(10) unsigned NOT NULL,
-  `name` varchar(100) DEFAULT NULL,
-  `subName` varchar(100) DEFAULT NULL,
-  `iconName` varchar(100) DEFAULT NULL,
-  `health` int(10) unsigned NOT NULL,
-  `level` tinyint(3) unsigned NOT NULL,
-  `displayId` int(10) unsigned NOT NULL,
-  `class` int(11) NOT NULL,
-  `faction` int(11) unsigned NOT NULL,
-  `scale` float NOT NULL,
-  `type` int(10) unsigned NOT NULL,
-  `flags` int(10) unsigned NOT NULL,
-  `flags2` int(11) NOT NULL,
-  `npcFlags` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  `Id` int(11) NOT NULL,
+  `Health` int(11) NOT NULL DEFAULT '1',
+  `Level` tinyint(4) NOT NULL DEFAULT '1',
+  `Class` tinyint(4) NOT NULL DEFAULT '1',
+  `Faction` int(11) NOT NULL DEFAULT '35',
+  `Scale` float NOT NULL DEFAULT '1',
+  `UnitFlags` int(11) NOT NULL DEFAULT '0',
+  `UnitFlags2` int(11) NOT NULL DEFAULT '0',
+  `NpcFlags` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of creature_data
 -- ----------------------------
+INSERT INTO `creature_data` VALUES ('53566', '393941', '90', '1', '35', '1', '0', '0', '3');
 
 -- ----------------------------
 -- Table structure for `creature_spawns`
@@ -47,7 +43,7 @@ CREATE TABLE `creature_data` (
 DROP TABLE IF EXISTS `creature_spawns`;
 CREATE TABLE `creature_spawns` (
   `guid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) NOT NULL,
   `map` int(11) NOT NULL,
   `x` float NOT NULL,
   `y` float NOT NULL,
@@ -60,6 +56,45 @@ CREATE TABLE `creature_spawns` (
 -- ----------------------------
 -- Records of creature_spawns
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for `creature_stats`
+-- ----------------------------
+DROP TABLE IF EXISTS `creature_stats`;
+CREATE TABLE `creature_stats` (
+  `Id` int(10) NOT NULL,
+  `Name` text,
+  `SubName` text,
+  `IconName` text,
+  `Flag` int(11) NOT NULL DEFAULT '0',
+  `Flag2` int(11) NOT NULL DEFAULT '0',
+  `Type` int(10) NOT NULL DEFAULT '0',
+  `Family` int(11) NOT NULL DEFAULT '0',
+  `Rank` int(11) NOT NULL DEFAULT '0',
+  `QuestKillNpcId` int(11) NOT NULL DEFAULT '0',
+  `QuestKillNpcId2` int(11) NOT NULL DEFAULT '0',
+  `DisplayInfoId` int(11) NOT NULL,
+  `DisplayInfoId2` int(11) NOT NULL DEFAULT '0',
+  `DisplayInfoId3` int(11) NOT NULL DEFAULT '0',
+  `DisplayInfoId4` int(11) NOT NULL DEFAULT '0',
+  `HealthModifier` float NOT NULL DEFAULT '1',
+  `PowerModifier` float NOT NULL DEFAULT '1',
+  `RacialLeader` tinyint(4) NOT NULL DEFAULT '0',
+  `QuestItemId` int(11) NOT NULL DEFAULT '0',
+  `QuestItemId2` int(11) NOT NULL DEFAULT '0',
+  `QuestItemId3` int(11) NOT NULL DEFAULT '0',
+  `QuestItemId4` int(11) NOT NULL DEFAULT '0',
+  `QuestItemId5` int(11) NOT NULL DEFAULT '0',
+  `QuestItemId6` int(11) NOT NULL DEFAULT '0',
+  `MovementInfoId` int(11) NOT NULL DEFAULT '0',
+  `ExpansionRequired` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+-- ----------------------------
+-- Records of creature_stats
+-- ----------------------------
+INSERT INTO `creature_stats` VALUES ('53566', 'Master Shang Xi', null, null, '0', '0', '7', '0', '0', '0', '0', '39574', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for `teleport_locations`

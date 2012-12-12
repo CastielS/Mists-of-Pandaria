@@ -14,18 +14,67 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-using Framework.Constants;
-using Framework.Network.Packets;
-using WorldServer.Network;
-using WorldServer.Game.WorldEntities;
+
 using Framework.Configuration;
+using Framework.Constants;
 using Framework.Database;
+using Framework.Network.Packets;
+using WorldServer.Game.WorldEntities;
+using WorldServer.Network;
+using WorldServer.Game.Managers;
+using WorldServer.Game.ObjectDefines;
 
 namespace WorldServer.Game.Packets.PacketHandler
 {
-    public class CacheHandler
+    public class CacheHandler : Globals
     {
+        [Opcode(ClientMessage.CreatureStats, "16357")]
+        public static void HandleCreatureStats(ref PacketReader packet, ref WorldClass session)
+        {
+            int id = packet.ReadInt32();
+            ulong guid = packet.ReadUInt64();
+
+            CreatureStats stats = DataMgr.FindData(id).Stats;
+
+            PacketWriter creatureStats = new PacketWriter(LegacyMessage.CreatureStats);
+
+            creatureStats.WriteInt32(stats.Id);
+            creatureStats.WriteCString(stats.Name);
+
+            for (int i = 0; i < 7; i++)
+                creatureStats.WriteCString("");
+
+            creatureStats.WriteCString(stats.SubName);
+            creatureStats.WriteCString("");
+            creatureStats.WriteCString(stats.IconName);
+
+            foreach (var v in stats.Flag)
+                creatureStats.WriteInt32(v);
+
+            creatureStats.WriteInt32(stats.Type);
+            creatureStats.WriteInt32(stats.Family);
+            creatureStats.WriteInt32(stats.Rank);
+
+            foreach (var v in stats.QuestKillNpcId)
+                creatureStats.WriteInt32(v);
+
+            foreach (var v in stats.DisplayInfoId)
+                creatureStats.WriteInt32(v);
+
+            creatureStats.WriteFloat(stats.HealthModifier);
+            creatureStats.WriteFloat(stats.PowerModifier);
+
+            creatureStats.WriteUInt8(stats.RacialLeader);
+
+            foreach (var v in stats.QuestItemId)
+                creatureStats.WriteInt32(v);
+
+            creatureStats.WriteInt32(stats.MovementInfoId);
+            creatureStats.WriteInt32(stats.ExpansionRequired);
+
+            session.Send(creatureStats);
+        }
+
         [Opcode(ClientMessage.NameCache, "16357")]
         public static void HandleNameCache(ref PacketReader packet, ref WorldClass session)
         {

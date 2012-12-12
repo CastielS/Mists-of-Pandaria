@@ -24,9 +24,9 @@ namespace Framework.Database
     {
         public int Count { get; set; }
 
-        public T Read<T>(int row, string columnName)
+        public T Read<T>(int row, string columnName, int number = 0)
         {
-            return (T)Convert.ChangeType(Rows[row][columnName], typeof(T));
+            return (T)Convert.ChangeType(Rows[row][columnName + (number != 0 ? (1 + number).ToString() : "")], typeof(T));
         }
     }
 }

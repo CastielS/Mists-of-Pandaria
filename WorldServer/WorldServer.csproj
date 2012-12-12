@@ -62,6 +62,8 @@
     <Compile Include="Game\Managers\SpawnManager.cs" />
     <Compile Include="Game\Managers\SpellManager.cs" />
     <Compile Include="Game\Managers\WorldManager.cs" />
+    <Compile Include="Game\ObjectDefines\CreatureData.cs" />
+    <Compile Include="Game\ObjectDefines\CreatureStats.cs" />
     <Compile Include="Game\Packets\PacketHandler\AuthenticationHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\CacheHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\CharacterHandler.cs" />

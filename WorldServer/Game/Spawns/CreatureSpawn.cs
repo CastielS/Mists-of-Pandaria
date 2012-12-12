@@ -1,14 +1,34 @@
-﻿using Framework.Constants;
+﻿/*
+ * Copyright (C) 2012 Arctium <http://>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using Framework.Constants;
+using Framework.Network.Packets;
 using Framework.ObjectDefines;
 using System;
+using WorldServer.Game.Managers;
 using WorldServer.Game.WorldEntities;
+using WorldServer.Network;
 
 namespace WorldServer.Game.Spawns
 {
-    public class CreatureSpawn : WorldObject, ISpawn
+    public class CreatureSpawn : WorldObject
     {
-        public UInt32 Id;
-        public Creature Data;
+        public Int32 Id;
+        public Creature Creature;
 
         public CreatureSpawn(int updateLength = (int)UnitFields.End) : base(updateLength) { }
 
@@ -17,9 +37,9 @@ namespace WorldServer.Game.Spawns
             Guid = new ObjectGuid(Guid, Id, HighGuidType.Unit).Guid;
         }
 
-        public void CreateData()
+        public void CreateData(Creature creature)
         {
-            Data = new Creature(Id);
+            Creature = creature;
         }
 
         public void SetCreatureFields()
@@ -27,9 +47,9 @@ namespace WorldServer.Game.Spawns
             // ObjectFields
             SetUpdateField<UInt64>((int)ObjectFields.Guid, Guid);
             SetUpdateField<UInt64>((int)ObjectFields.Data, 0);
-            SetUpdateField<UInt64>((int)ObjectFields.Entry, Id);
+            SetUpdateField<Int32>((int)ObjectFields.Entry, Id);
             SetUpdateField<Int32>((int)ObjectFields.Type, 0x9);
-            SetUpdateField<Single>((int)ObjectFields.Scale, Data.Scale);
+            SetUpdateField<Single>((int)ObjectFields.Scale, Creature.Data.Scale);
 
             // UnitFields
             SetUpdateField<UInt64>((int)UnitFields.Charm, 1);
@@ -41,12 +61,12 @@ namespace WorldServer.Game.Spawns
             SetUpdateField<UInt64>((int)UnitFields.Target, 0);
             SetUpdateField<UInt64>((int)UnitFields.ChannelObject, 0);
 
-            SetUpdateField<UInt32>((int)UnitFields.Health, Data.Health);
+            SetUpdateField<Int32>((int)UnitFields.Health, Creature.Data.Health);
 
             for (int i = 0; i < 5; i++)
                 SetUpdateField<Int32>((int)UnitFields.Power + i, 0);
 
-            SetUpdateField<UInt32>((int)UnitFields.MaxHealth, Data.Health);
+            SetUpdateField<Int32>((int)UnitFields.MaxHealth, Creature.Data.Health);
 
             for (int i = 0; i < 5; i++)
                 SetUpdateField<Int32>((int)UnitFields.MaxPower + i, 0);
@@ -55,11 +75,11 @@ namespace WorldServer.Game.Spawns
             SetUpdateField<Int32>((int)UnitFields.PowerRegenInterruptedFlatModifier, 0);
             SetUpdateField<Int32>((int)UnitFields.BaseHealth, 1);
             SetUpdateField<Int32>((int)UnitFields.BaseMana, 0);
-            SetUpdateField<Int32>((int)UnitFields.Level, Data.Level);
-            SetUpdateField<UInt32>((int)UnitFields.FactionTemplate, Data.Faction);
-            SetUpdateField<UInt32>((int)UnitFields.Flags, Data.Flags);
-            SetUpdateField<UInt32>((int)UnitFields.Flags2, Data.Flags2);
-            SetUpdateField<UInt32>((int)UnitFields.NpcFlags, Data.NpcFlags);
+            SetUpdateField<Int32>((int)UnitFields.Level, Creature.Data.Level);
+            SetUpdateField<Int32>((int)UnitFields.FactionTemplate, Creature.Data.Faction);
+            SetUpdateField<Int32>((int)UnitFields.Flags, Creature.Data.UnitFlags);
+            SetUpdateField<Int32>((int)UnitFields.Flags2, Creature.Data.UnitFlags2);
+            SetUpdateField<Int32>((int)UnitFields.NpcFlags, Creature.Data.NpcFlags);
 
             for (int i = 0; i < 5; i++)
             {
@@ -73,8 +93,8 @@ namespace WorldServer.Game.Spawns
             SetUpdateField<Byte>((int)UnitFields.DisplayPower, 0, 2);
             SetUpdateField<Byte>((int)UnitFields.DisplayPower, 0, 3);
 
-            SetUpdateField<UInt32>((int)UnitFields.DisplayID, Data.DisplayID);
-            SetUpdateField<UInt32>((int)UnitFields.NativeDisplayID, Data.DisplayID);
+            SetUpdateField<Int32>((int)UnitFields.DisplayID, Creature.Stats.DisplayInfoId[0]);
+            SetUpdateField<Int32>((int)UnitFields.NativeDisplayID, Creature.Stats.DisplayInfoId[2]);
             SetUpdateField<Int32>((int)UnitFields.MountDisplayID, 0);
             SetUpdateField<Int32>((int)UnitFields.DynamicFlags, 0);
 

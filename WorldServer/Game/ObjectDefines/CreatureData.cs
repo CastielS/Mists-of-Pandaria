@@ -15,10 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Framework.ObjectDefines
+using System;
+
+namespace WorldServer.Game.ObjectDefines
 {
-    public interface ISpawn
+    public class CreatureData
     {
-        void CreateFullGuid();
+        public Int32 Health;
+        public Byte Level;
+        public Byte Class;
+        public Int32 Faction;
+        public Single Scale;
+        public Int32 UnitFlags;
+        public Int32 UnitFlags2;
+        public Int32 NpcFlags;
     }
 }

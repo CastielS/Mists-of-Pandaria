@@ -24,7 +24,7 @@ namespace Framework.ObjectDefines
     {
         public UInt64 Guid { get; set; }
 
-        public ObjectGuid(ulong low, uint id, HighGuidType highType)
+        public ObjectGuid(ulong low, int id, HighGuidType highType)
         {
             Guid = (ulong)(low | ((ulong)id << 32) | (ulong)highType << ((highType == HighGuidType.Guild || highType == HighGuidType.Corpse) ? 48 : 52));
         }

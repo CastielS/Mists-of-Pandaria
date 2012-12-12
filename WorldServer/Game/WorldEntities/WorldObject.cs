@@ -153,10 +153,10 @@ namespace WorldServer.Game.WorldEntities
 
             UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
 
-            if (Globals.SpawnMgr.Spawns.Count > 0)
+            if (Globals.SpawnMgr.CreatureSpawns.Count > 0)
             {
 
-                foreach (var s in Globals.SpawnMgr.Spawns)
+                foreach (var s in Globals.SpawnMgr.CreatureSpawns)
                 {
                     WorldObject spawn = s.Key as CreatureSpawn;
                     spawn.ToCreature().SetCreatureFields();
