@@ -41,7 +41,7 @@ namespace WorldServer.Game.Spawns
             if (result.Count != 0)
                 return result.Read<ulong>(0, "guid");
 
-            return 1;
+            return 0;
         }
 
         public void CreateFullGuid()
