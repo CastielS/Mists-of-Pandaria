@@ -23,7 +23,7 @@ namespace Framework.Logging
         ERROR   = 0x2,
         DUMP    = 0x4,
         INIT    = 0x8,
-        MISC    = 0x10,
+        DB      = 0x10,
         CMD     = 0x20,
         DEBUG   = 0x40,
         DEFAULT = 0x80

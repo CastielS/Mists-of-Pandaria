@@ -22,6 +22,8 @@ using System;
 using WorldServer.Game.Managers;
 using WorldServer.Game.WorldEntities;
 using WorldServer.Network;
+using Framework.Database;
+using Framework.Logging;
 
 namespace WorldServer.Game.Spawns
 {
@@ -32,6 +34,16 @@ namespace WorldServer.Game.Spawns
 
         public CreatureSpawn(int updateLength = (int)UnitFields.End) : base(updateLength) { }
 
+
+        public static ulong GetLastGuid()
+        {
+            SQLResult result = DB.World.Select("SELECT * FROM `creature_spawns` ORDER BY `guid` DESC LIMIT 1");
+            if (result.Count != 0)
+                return result.Read<ulong>(0, "guid");
+
+            return 1;
+        }
+
         public void CreateFullGuid()
         {
             Guid = new ObjectGuid(Guid, Id, HighGuidType.Unit).Guid;
@@ -40,6 +52,52 @@ namespace WorldServer.Game.Spawns
         public void CreateData(Creature creature)
         {
             Creature = creature;
+        }
+
+        public bool AddToDB()
+        {
+            if (DB.World.Execute("INSERT INTO creature_spawns (Id, Map, X, Y, Z, O) VALUES (?, ?, ?, ?, ?, ?)", Id, Map, Position.X, Position.Y, Position.Z, Position.W))
+            {
+                Log.Message(LogType.DB, "Creature (Id: {0}) successfully spawned (Guid: {1})", Id, Guid);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void AddToWorld()
+        {
+            CreateFullGuid();
+            CreateData(Creature);
+
+            Globals.SpawnMgr.AddSpawn(this, ref Creature);
+
+            SetCreatureFields();
+
+            WorldObject obj = this;
+            UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+
+            foreach (var v in Globals.WorldMgr.Sessions)
+            {
+                Character pChar = v.Value.Character;
+                if (pChar.Map != Map)
+                    continue;
+
+                PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
+
+                updateObject.WriteUInt16((ushort)Map);
+                updateObject.WriteUInt32(1);
+                updateObject.WriteUInt8(1);
+                updateObject.WriteGuid(Guid);
+                updateObject.WriteUInt8(3);
+
+                Globals.WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref obj, updateFlags);
+
+                WriteUpdateFields(ref updateObject);
+                WriteDynamicUpdateFields(ref updateObject);
+
+                v.Value.Send(updateObject);
+            }
         }
 
         public void SetCreatureFields()

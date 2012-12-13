@@ -222,5 +222,10 @@ namespace WorldServer.Game.WorldEntities
             for (int i = 0; i < 200; i++)
                 SetUpdateField<UInt32>((int)PlayerFields.ExploredZones + i, 0);
         }
+
+        public static string NormalizeName(string name)
+        {
+            return name[0].ToString().ToUpper() + name.Remove(0, 1).ToLower();
+        }
     }
 }

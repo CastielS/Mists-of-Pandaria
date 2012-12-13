@@ -169,7 +169,7 @@ namespace WorldServer.Game.PacketHandler
             packet.ReadByte();                      // Always 0
 
             uint nameLength = BitUnpack.GetNameLength<uint>(7);
-            string name = packet.ReadString(nameLength);
+            string name = Character.NormalizeName(packet.ReadString(nameLength));
 
             SQLResult result = DB.Characters.Select("SELECT * from characters WHERE name = ?", name);
             PacketWriter writer = new PacketWriter(LegacyMessage.ResponseCharacterCreate);

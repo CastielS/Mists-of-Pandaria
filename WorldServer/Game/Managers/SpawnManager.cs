@@ -72,7 +72,7 @@ namespace WorldServer.Game.Managers
                 AddSpawn(spawn, ref data);
             }
 
-            Log.Message(LogType.MISC, "Loaded {0} creature spawns.", CreatureSpawns.Count);
+            Log.Message(LogType.DB, "Loaded {0} creature spawns.", CreatureSpawns.Count);
         }
 
         public void Initialize()

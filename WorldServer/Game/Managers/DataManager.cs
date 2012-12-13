@@ -126,7 +126,7 @@ namespace WorldServer.Game.Managers
                 Add(creature);
             }
 
-            Log.Message(LogType.MISC, "Loaded {0} creatures.", Creatures.Count);
+            Log.Message(LogType.DB, "Loaded {0} creatures.", Creatures.Count);
         }
 
         public void Initialize()

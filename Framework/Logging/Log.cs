@@ -51,7 +51,7 @@ namespace Framework.Logging
                 case LogType.INIT:
                     DefaultConsole.ForegroundColor = ConsoleColor.Cyan;
                     break;
-                case LogType.MISC:
+                case LogType.DB:
                     DefaultConsole.ForegroundColor = ConsoleColor.DarkBlue;
                     break;
                 case LogType.CMD:
