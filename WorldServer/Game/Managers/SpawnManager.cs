@@ -16,13 +16,13 @@
  */
 
 using Framework.Database;
+using Framework.Logging;
 using Framework.ObjectDefines;
 using Framework.Singleton;
 using System;
 using System.Collections.Generic;
 using WorldServer.Game.Spawns;
 using WorldServer.Game.WorldEntities;
-using Framework.Logging;
 
 namespace WorldServer.Game.Managers
 {
@@ -40,6 +40,21 @@ namespace WorldServer.Game.Managers
         public void AddSpawn(CreatureSpawn spawn, ref Creature data)
         {
             CreatureSpawns.Add(spawn, data);
+        }
+
+        public void RemoveSpawn(CreatureSpawn spawn)
+        {
+            CreatureSpawns.Remove(spawn);
+            DB.World.Execute("DELETE FROM creature_spawns WHERE Guid = ?", ObjectGuid.GetGuid(spawn.Guid));
+        }
+
+        public CreatureSpawn FindSpawn(ulong guid)
+        {
+            foreach (var c in CreatureSpawns)
+                if (c.Key.Guid == guid)
+                    return c.Key;
+
+            return null;
         }
 
         public void LoadCreatureSpawns()

@@ -28,5 +28,15 @@ namespace Framework.Database
         {
             return (T)Convert.ChangeType(Rows[row][columnName + (number != 0 ? (1 + number).ToString() : "")], typeof(T));
         }
+
+        public object[] ReadAllValuesFromField(string columnName)
+        {
+            object[] obj = new object[Count];
+
+            for (int i = 0; i < Count; i++)
+                obj[i] = Rows[i][columnName];
+
+            return obj;
+        }
     }
 }

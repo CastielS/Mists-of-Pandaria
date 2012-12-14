@@ -44,12 +44,11 @@ namespace WorldServer.Game.PacketHandler
 
             session.Send(updateObject);
 
-            var tempSession = WorldMgr.Sessions;
-            tempSession.Remove(character.Guid);
+            var tempSessions = WorldMgr.Sessions;
 
-            foreach (var s in tempSession)
+            foreach (var s in tempSessions)
             {
-                if ((character as Character).Zone != s.Value.Character.Zone)
+                if (s.Value.Character.Guid == character.Guid || (character as Character).Zone != s.Value.Character.Zone)
                     continue;
 
                 updateObject = new PacketWriter(LegacyMessage.UpdateObject);
@@ -69,23 +68,23 @@ namespace WorldServer.Game.PacketHandler
                 s.Value.Send(updateObject);
             }
 
-            foreach (var s in tempSession)
+            foreach (var s in tempSessions)
             {
-                character = s.Value.Character;
+                WorldObject pChar = s.Value.Character;
 
-                if ((character as Character).Zone != session.Character.Zone)
+                if (pChar.Guid == character.Guid || pChar.ToCharacter().Zone != character.ToCharacter().Zone)
                     continue;
 
                 updateObject = new PacketWriter(LegacyMessage.UpdateObject);
 
-                updateObject.WriteUInt16((ushort)(character as Character).Map);
+                updateObject.WriteUInt16((ushort)pChar.Map);
                 updateObject.WriteUInt32(1);
                 updateObject.WriteUInt8(1);
-                updateObject.WriteGuid(character.Guid);
+                updateObject.WriteGuid(pChar.Guid);
                 updateObject.WriteUInt8(4);
 
                 updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
-                WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref character, updateFlags);
+                WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref pChar, updateFlags);
 
                 character.WriteUpdateFields(ref updateObject);
                 character.WriteDynamicUpdateFields(ref updateObject);
@@ -96,11 +95,11 @@ namespace WorldServer.Game.PacketHandler
             character.AddSpawnsToWorld(ref session);
         }
 
-        public static void HandleObjectDestroy(ref WorldClass session)
+        public static void HandleObjectDestroy(ref WorldClass session, ulong guid)
         {
             PacketWriter objectDestroy = new PacketWriter(LegacyMessage.ObjectDestroy);
 
-            objectDestroy.WriteUInt64(session.Character.Guid);
+            objectDestroy.WriteUInt64(guid);
             objectDestroy.WriteUInt8(0);
 
             session.Send(objectDestroy);

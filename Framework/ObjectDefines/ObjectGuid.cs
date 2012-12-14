@@ -26,7 +26,22 @@ namespace Framework.ObjectDefines
 
         public ObjectGuid(ulong low, int id, HighGuidType highType)
         {
-            Guid = (ulong)(low | ((ulong)id << 32) | (ulong)highType << ((highType == HighGuidType.Guild || highType == HighGuidType.Corpse) ? 48 : 52));
+            Guid = (ulong)(low | ((ulong)id << 32) | (ulong)highType << 48);
+        }
+
+        public static HighGuidType GetGuidType(ulong guid)
+        {
+            return (HighGuidType)(guid >> 48);
+        }
+
+        public static int GetId(ulong guid)
+        {
+            return (int)((guid >> 32) & 0xFFFF);
+        }
+
+        public static ulong GetGuid(ulong guid)
+        {
+            return guid & 0xFFFFFFFF;
         }
     }
 }

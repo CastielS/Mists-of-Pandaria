@@ -54,5 +54,4 @@ namespace Framework.DBC
         public uint InventoryType;                                  // 6
         public uint Sheath;                                         // 7
     };
-
 }

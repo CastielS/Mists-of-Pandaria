@@ -33,6 +33,9 @@ namespace WorldServer.Game.WorldEntities
         public Vector4 Position;
         public UInt32 Map;
 
+        // Some data
+        public UInt64 TargetGuid;
+
         public bool IsInWorld { get; set; }
         public uint Blocks;
         public byte[] Mask;

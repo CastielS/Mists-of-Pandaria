@@ -17,11 +17,12 @@
 
 using Framework.Logging;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Text;
 using System.Threading;
-using System.Collections.Generic;
 
 namespace Framework.Database
 {
@@ -109,6 +110,41 @@ namespace Framework.Database
             }
 
             return retData;
+        }
+
+        public void ExecuteBigQuery(string table, string fields, int fieldCount, int resultCount, object[] values, bool resultAsIndex = true)
+        {
+            if (values.Length > 0)
+            {
+                StringBuilder sqlString = new StringBuilder();
+
+                sqlString.AppendFormat("INSERT INTO {0} ({1}) VALUES ", table, fields);
+
+                for (int i = 0; i < resultCount; i++)
+                {
+                    sqlString.AppendFormat("(");
+
+                    for (int j = 0; j < fieldCount; j++)
+                    {
+                        int index = resultAsIndex ? i : j;
+
+                        if (j == fieldCount - 1)
+                            sqlString.Append(String.Format(CultureInfo.GetCultureInfo("en-US").NumberFormat, "'{0}'", values[index]));
+                        else
+                            sqlString.Append(String.Format(CultureInfo.GetCultureInfo("en-US").NumberFormat, "'{0}', ", values[index]));
+                    }
+
+                    if (i == resultCount - 1)
+                        sqlString.AppendFormat(");");
+                    else
+                        sqlString.AppendFormat("),");
+                }
+
+                MySqlCommand sqlCommand = new MySqlCommand(sqlString.ToString(), Connection);
+                sqlCommand.ExecuteNonQuery();
+            }
+
+            return;
         }
     }
 }

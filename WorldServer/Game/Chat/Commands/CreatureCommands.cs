@@ -20,6 +20,7 @@ using WorldServer.Game.Managers;
 using WorldServer.Game.Packets.PacketHandler;
 using WorldServer.Game.Spawns;
 using WorldServer.Game.WorldEntities;
+using WorldServer.Game.PacketHandler;
 
 namespace WorldServer.Game.Chat.Commands
 {
@@ -53,6 +54,24 @@ namespace WorldServer.Game.Chat.Commands
                 else
                     ChatHandler.SendMessageByType(ref session, 0, 0, "Spawn can't be added.");
             }
+        }
+
+        [ChatCommand("delnpc")]
+        public static void DeleteNpc(string[] args)
+        {
+            var session = WorldMgr.GetSession(WorldMgr.Session.Character.Guid);
+            var pChar = session.Character;
+            var spawn = SpawnMgr.FindSpawn(pChar.TargetGuid);
+
+            if (spawn != null)
+            {
+                ObjectHandler.HandleObjectDestroy(ref session, pChar.TargetGuid);
+
+                SpawnMgr.RemoveSpawn(spawn);
+                ChatHandler.SendMessageByType(ref session, 0, 0, "Selected Spawn successfully removed.");
+            }
+            else
+                ChatHandler.SendMessageByType(ref session, 0, 0, "Not a creature.");
         }
     }
 }

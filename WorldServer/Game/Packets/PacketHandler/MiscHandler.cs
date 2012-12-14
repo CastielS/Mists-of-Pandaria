@@ -21,6 +21,7 @@ using Framework.Network.Packets;
 using WorldServer.Network;
 using WorldServer.Game.Managers;
 using Framework.Database;
+using Framework.ObjectDefines;
 
 namespace WorldServer.Game.Packets.PacketHandler
 {
@@ -107,6 +108,26 @@ namespace WorldServer.Game.Packets.PacketHandler
             uint zone = packet.ReadUInt32();
 
             ObjectMgr.SetZone(ref pChar, zone);
+        }
+
+        [Opcode(ClientMessage.SetSelection, "16357")]
+        public static void HandleSetSelection(ref PacketReader packet, ref WorldClass session)
+        {
+            byte[] guidMask = { 3, 1, 7, 2, 6, 4, 0, 5 };
+            byte[] guidBytes = { 4, 1, 5, 2, 6, 7, 0, 3 };
+
+            BitUnpack GuidUnpacker = new BitUnpack(packet);
+
+            ulong fullGuid = GuidUnpacker.GetGuid(guidMask, guidBytes);
+            ulong guid = ObjectGuid.GetGuid(fullGuid);
+
+            var sess = WorldMgr.GetSession(session.Character.Guid);
+            sess.Character.TargetGuid = fullGuid;
+
+            if (guid == 0)
+                Log.Message(LogType.DEBUG, "Character (Guid: {0}) removed current selection.", session.Character.Guid);
+            else
+                Log.Message(LogType.DEBUG, "Character (Guid: {0}) selected a {1} (Guid: {2}, Id: {3}).", session.Character.Guid, ObjectGuid.GetGuidType(fullGuid), guid, ObjectGuid.GetId(fullGuid));
         }
     }
 }

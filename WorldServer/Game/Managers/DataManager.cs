@@ -67,19 +67,18 @@ namespace WorldServer.Game.Managers
             for (int r = 0; r < result.Count; r++)
             {
                 CreatureStats Stats = new CreatureStats();
-                CreatureData Data = new CreatureData();
 
-                Stats.Id = result.Read<Int32>(r, "Id");
-                Stats.Name = result.Read<String>(r, "Name");
-                Stats.SubName = result.Read<String>(r, "SubName");
+                Stats.Id       = result.Read<Int32>(r, "Id");
+                Stats.Name     = result.Read<String>(r, "Name");
+                Stats.SubName  = result.Read<String>(r, "SubName");
                 Stats.IconName = result.Read<String>(r, "IconName");
 
                 for (int i = 0; i < Stats.Flag.Capacity; i++)
                     Stats.Flag.Add(result.Read<Int32>(r, "Flag", i));
 
-                Stats.Type = result.Read<Int32>(r, "Type");
+                Stats.Type   = result.Read<Int32>(r, "Type");
                 Stats.Family = result.Read<Int32>(r, "Family");
-                Stats.Rank = result.Read<Int32>(r, "Rank");
+                Stats.Rank   = result.Read<Int32>(r, "Rank");
 
                 for (int i = 0; i < Stats.QuestKillNpcId.Capacity; i++)
                     Stats.QuestKillNpcId.Add(result.Read<Int32>(r, "QuestKillNpcId", i));
@@ -88,42 +87,50 @@ namespace WorldServer.Game.Managers
                     Stats.DisplayInfoId.Add(result.Read<Int32>(r, "DisplayInfoId", i));
 
                 Stats.HealthModifier = result.Read<Single>(r, "HealthModifier");
-                Stats.PowerModifier = result.Read<Single>(r, "PowerModifier");
-                Stats.RacialLeader = result.Read<Byte>(r, "RacialLeader");
+                Stats.PowerModifier  = result.Read<Single>(r, "PowerModifier");
+                Stats.RacialLeader   = result.Read<Byte>(r, "RacialLeader");
 
                 for (int i = 0; i < Stats.QuestItemId.Capacity; i++)
                     Stats.QuestItemId.Add(result.Read<Int32>(r, "QuestItemId", i));
 
-                Stats.MovementInfoId = result.Read<Int32>(r, "MovementInfoId");
+                Stats.MovementInfoId    = result.Read<Int32>(r, "MovementInfoId");
                 Stats.ExpansionRequired = result.Read<Int32>(r, "ExpansionRequired");
-
-                SQLResult dataResult = DB.World.Select("SELECT * FROM creature_data WHERE id = ?", Stats.Id);
-
-                if (dataResult.Count == 0)
-                {
-                    Log.Message(LogType.ERROR, "Creature data for Id {0} not found.", Stats.Id);
-                    Log.Message(LogType.ERROR, "Insert default value to the database and continue loading...");
-
-                    DB.World.Execute("INSERT INTO creature_data (Id) VALUES (?)", Stats.Id);
-                }
-
-                // Let's load it always. Default definitions are inserted if they are missing
-                Data.Health = dataResult.Read<Int32>(0, "Health");
-                Data.Level = dataResult.Read<Byte>(0, "Level");
-                Data.Class = dataResult.Read<Byte>(0, "Class");
-                Data.Faction = dataResult.Read<Int32>(0, "Faction");
-                Data.Scale = dataResult.Read<Int32>(0, "Scale");
-                Data.UnitFlags = dataResult.Read<Int32>(0, "UnitFlags");
-                Data.UnitFlags2 = dataResult.Read<Int32>(0, "UnitFlags2");
-                Data.NpcFlags = dataResult.Read<Int32>(0, "NpcFlags");
 
                 Creature creature = new Creature()
                 {
                     Stats = Stats,
-                    Data = Data
                 };
 
                 Add(creature);
+            }
+
+            SQLResult dataResult = DB.World.Select("SELECT Id FROM creature_stats WHERE Id NOT IN (SELECT Id FROM creature_data)");
+
+            if (dataResult.Count != 0)
+            {
+                var missingIds = dataResult.ReadAllValuesFromField("Id");
+                DB.World.ExecuteBigQuery("creature_data", "Id", 1, dataResult.Count, missingIds);
+
+                Log.Message(LogType.DB, "Added {0} default data definition for creatures.", missingIds.Length);
+            }
+
+            dataResult = DB.World.Select("SELECT * FROM creature_data WHERE Id IN (SELECT Id FROM creature_stats)");
+
+            for (int i = 0; i < Creatures.Count; i++)
+            {
+                int id = dataResult.Read<Int32>(i, "Id");
+
+                Creatures[id].Data = new CreatureData()
+                {
+                    Health     = dataResult.Read<Int32>(i, "Health"),
+                    Level      = dataResult.Read<Byte>(i, "Level"),
+                    Class      = dataResult.Read<Byte>(i, "Class"),
+                    Faction    = dataResult.Read<Int32>(i, "Faction"),
+                    Scale      = dataResult.Read<Int32>(i, "Scale"),
+                    UnitFlags  = dataResult.Read<Int32>(i, "UnitFlags"),
+                    UnitFlags2 = dataResult.Read<Int32>(i, "UnitFlags2"),
+                    NpcFlags   = dataResult.Read<Int32>(i, "NpcFlags")
+                };
             }
 
             Log.Message(LogType.DB, "Loaded {0} creatures.", Creatures.Count);
