@@ -28,10 +28,12 @@ namespace WorldServer.Game.Managers
     public class DataManager : SingletonBase<DataManager>
     {
         Dictionary<Int32, Creature> Creatures;
+        Dictionary<Int32, GameObject> GameObjects;
 
         DataManager()
         {
             Creatures = new Dictionary<Int32, Creature>();
+            GameObjects = new Dictionary<Int32, GameObject>();
 
             Initialize();
         }
@@ -51,7 +53,7 @@ namespace WorldServer.Game.Managers
             return Creatures;
         }
 
-        public Creature FindData(int id)
+        public Creature FindCreature(int id)
         {
             foreach (var c in Creatures)
                 if (c.Key == id)
@@ -136,9 +138,69 @@ namespace WorldServer.Game.Managers
             Log.Message(LogType.DB, "Loaded {0} creatures.", Creatures.Count);
         }
 
+        public void Add(GameObject gameobject)
+        {
+            GameObjects.Add(gameobject.Stats.Id, gameobject);
+        }
+
+        public void Remove(GameObject gameobject)
+        {
+            GameObjects.Remove(gameobject.Stats.Id);
+        }
+
+        public Dictionary<Int32, GameObject> GetGameObjects()
+        {
+            return GameObjects;
+        }
+
+        public GameObject FindGameObject(int id)
+        {
+            foreach (var c in GameObjects)
+                if (c.Key == id)
+                    return c.Value;
+
+            return null;
+        }
+
+        public void LoadGameObject()
+        {
+            SQLResult result = DB.World.Select("SELECT * FROM gameobject_stats");
+
+            for (int r = 0; r < result.Count; r++)
+            {
+                GameObjectStats Stats = new GameObjectStats();
+
+                Stats.Id = result.Read<Int32>(r, "Id");
+                Stats.Type = result.Read<Int32>(r, "Type");
+                Stats.Name = result.Read<String>(r, "Name");
+                Stats.IconName = result.Read<String>(r, "IconName");
+                Stats.CastBarCaption = result.Read<String>(r, "CastBarCaption");
+
+                for (int i = 0; i < Stats.Data.Capacity; i++)
+                    Stats.Data.Add(result.Read<Int32>(r, "Data", i));
+
+                Stats.Size = result.Read<Int32>(r, "Size");
+
+                for (int i = 0; i < Stats.QuestItemId.Capacity; i++)
+                    Stats.QuestItemId.Add(result.Read<Int32>(r, "QuestItemId", i));
+
+                Stats.ExpansionRequired = result.Read<Int32>(r, "ExpansionRequired");
+
+                GameObject gameobject = new GameObject()
+                {
+                    Stats = Stats,
+                };
+
+                Add(gameobject);
+            }
+
+            Log.Message(LogType.DB, "Loaded {0} gameobjects.", GameObjects.Count);
+        }
+
         public void Initialize()
         {
             LoadCreatureData();
+            LoadGameObject();
         }
     }
 }

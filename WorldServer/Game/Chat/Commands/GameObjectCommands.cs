@@ -17,7 +17,6 @@
 
 using Framework.Console;
 using WorldServer.Game.Managers;
-using WorldServer.Game.PacketHandler;
 using WorldServer.Game.Packets.PacketHandler;
 using WorldServer.Game.Spawns;
 using WorldServer.Game.WorldEntities;
@@ -25,25 +24,25 @@ using WorldServer.Network;
 
 namespace WorldServer.Game.Chat.Commands
 {
-    public class CreatureCommands : Globals
+    public class GameObjectCommands : Globals
     {
-        [ChatCommand("addnpc")]
-        public static void AddNpc(string[] args, ref WorldClass session)
+        [ChatCommand("addobject")]
+        public static void AddObject(string[] args, ref WorldClass session)
         {
             var pChar = session.Character;
 
-            int creatureId = CommandParser.Read<int>(args, 1);
+            int objectId = CommandParser.Read<int>(args, 1);
 
-            Creature creature = DataMgr.FindCreature(creatureId);
-            if (creature != null)
+            GameObject gObject = DataMgr.FindGameObject(objectId);
+            if (gObject != null)
             {
-                CreatureSpawn spawn = new CreatureSpawn()
+                GameObjectSpawn spawn = new GameObjectSpawn()
                 {
-                    Guid     = CreatureSpawn.GetLastGuid() + 1,
-                    Id       = creatureId,
-                    Creature = creature,
+                    Guid = GameObjectSpawn.GetLastGuid() + 1,
+                    Id = objectId,
+                    GameObject = gObject,
                     Position = pChar.Position,
-                    Map      = pChar.Map
+                    Map = pChar.Map
                 };
 
                 if (spawn.AddToDB())
@@ -54,23 +53,6 @@ namespace WorldServer.Game.Chat.Commands
                 else
                     ChatHandler.SendMessageByType(ref session, 0, 0, "Spawn can't be added.");
             }
-        }
-
-        [ChatCommand("delnpc")]
-        public static void DeleteNpc(string[] args, ref WorldClass session)
-        {
-            var pChar = session.Character;
-            var spawn = SpawnMgr.FindSpawn(pChar.TargetGuid);
-
-            if (spawn != null)
-            {
-                SpawnMgr.RemoveSpawn(spawn);
-
-                WorldMgr.SendToAllInMap(pChar.Guid, ObjectHandler.HandleObjectDestroy(ref session, pChar.TargetGuid));
-                ChatHandler.SendMessageByType(ref session, 0, 0, "Selected Spawn successfully removed.");
-            }
-            else
-                ChatHandler.SendMessageByType(ref session, 0, 0, "Not a creature.");
         }
     }
 }

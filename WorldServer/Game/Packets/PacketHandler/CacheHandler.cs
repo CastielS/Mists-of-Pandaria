@@ -19,10 +19,10 @@ using Framework.Configuration;
 using Framework.Constants;
 using Framework.Database;
 using Framework.Network.Packets;
-using WorldServer.Game.WorldEntities;
-using WorldServer.Network;
 using WorldServer.Game.Managers;
 using WorldServer.Game.ObjectDefines;
+using WorldServer.Game.WorldEntities;
+using WorldServer.Network;
 
 namespace WorldServer.Game.Packets.PacketHandler
 {
@@ -34,7 +34,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             int id = packet.ReadInt32();
             ulong guid = packet.ReadUInt64();
 
-            CreatureStats stats = DataMgr.FindData(id).Stats;
+            CreatureStats stats = DataMgr.FindCreature(id).Stats;
 
             PacketWriter creatureStats = new PacketWriter(LegacyMessage.CreatureStats);
 
@@ -74,6 +74,42 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             session.Send(ref creatureStats);
         }
+
+        [Opcode(ClientMessage.GameObjectStats, "16357")]
+        public static void HandleGameObjectStats(ref PacketReader packet, ref WorldClass session)
+        {
+            int id = packet.ReadInt32();
+            ulong guid = packet.ReadUInt64();
+
+            GameObjectStats stats = DataMgr.FindGameObject(id).Stats;
+
+            PacketWriter gameObjectStats = new PacketWriter(LegacyMessage.GameObjectStats);
+
+            gameObjectStats.WriteInt32(stats.Id);
+            gameObjectStats.WriteInt32(stats.Type);
+            gameObjectStats.WriteInt32(stats.DisplayInfoId);
+            gameObjectStats.WriteCString(stats.Name);
+
+            for (int i = 0; i < 3; i++)
+                gameObjectStats.WriteCString("");
+
+            gameObjectStats.WriteCString(stats.IconName);
+            gameObjectStats.WriteCString(stats.CastBarCaption);
+            gameObjectStats.WriteCString("");
+
+            foreach (var v in stats.Data)
+                gameObjectStats.WriteInt32(v);
+
+            gameObjectStats.WriteFloat(stats.Size);
+
+            foreach (var v in stats.QuestItemId)
+                gameObjectStats.WriteInt32(v);
+
+            gameObjectStats.WriteInt32(stats.ExpansionRequired);
+
+            session.Send(ref gameObjectStats);
+        }
+
 
         [Opcode(ClientMessage.NameCache, "16357")]
         public static void HandleNameCache(ref PacketReader packet, ref WorldClass session)

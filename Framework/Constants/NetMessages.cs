@@ -455,6 +455,7 @@ namespace Framework.Constants
         LogoutComplete                           = 0x2A0,
         MessageChat                              = 0x009,
         CreatureStats                            = 0xAA4,
+        GameObjectStats                          = 0x80D,
         NameCache                                = 0x30D,
         RealmCache                               = 0xD81,
     }
@@ -502,6 +503,7 @@ namespace Framework.Constants
         RequestUITime                            = -1,
         ActivePlayer                             = 0xF84,
         CreatureStats                            = 0x285,
+        GameObjectStats                          = 0xBE9,
         NameCache                                = 0x1EC,
         RealmCache                               = 0xA4D,
         ZoneUpdate                               = 0x88D,

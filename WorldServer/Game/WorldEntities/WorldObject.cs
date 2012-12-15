@@ -140,7 +140,7 @@ namespace WorldServer.Game.WorldEntities
             packet.WriteUInt8(0);
         }
 
-        public void AddSpawnsToWorld(ref WorldClass session)
+        public void AddCreatureSpawnsToWorld(ref WorldClass session)
         {
             var pChar = session.Character;
 
@@ -148,13 +148,48 @@ namespace WorldServer.Game.WorldEntities
 
             if (Globals.SpawnMgr.CreatureSpawns.Count > 0)
             {
-
                 foreach (var s in Globals.SpawnMgr.CreatureSpawns)
                 {
                     WorldObject spawn = s.Key as CreatureSpawn;
                     spawn.ToCreature().SetCreatureFields();
 
                     var data = s.Value as Creature;
+
+                    if (spawn.Map != pChar.Map)
+                        continue;
+
+                    PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
+
+                    updateObject.WriteUInt16((ushort)spawn.Map);
+                    updateObject.WriteUInt32(1);
+                    updateObject.WriteUInt8(1);
+                    updateObject.WriteGuid(spawn.Guid);
+                    updateObject.WriteUInt8(3);
+
+                    Globals.WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref spawn, updateFlags);
+
+                    spawn.WriteUpdateFields(ref updateObject);
+                    spawn.WriteDynamicUpdateFields(ref updateObject);
+
+                    session.Send(ref updateObject);
+                }
+            }
+        }
+
+        public void AddGameObjectSpawnsToWorld(ref WorldClass session)
+        {
+            var pChar = session.Character;
+
+            UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+
+            if (Globals.SpawnMgr.GameObjectSpawns.Count > 0)
+            {
+                foreach (var s in Globals.SpawnMgr.GameObjectSpawns)
+                {
+                    WorldObject spawn = s.Key as GameObjectSpawn;
+                    spawn.ToCreature().SetCreatureFields();
+
+                    var data = s.Value as GameObject;
 
                     if (spawn.Map != pChar.Map)
                         continue;

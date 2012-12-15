@@ -54,6 +54,7 @@
     <Compile Include="Game\Chat\ChatCommandAttribute.cs" />
     <Compile Include="Game\Chat\ChatCommandParser.cs" />
     <Compile Include="Game\Chat\Commands\CreatureCommands.cs" />
+    <Compile Include="Game\Chat\Commands\GameObjectCommands.cs" />
     <Compile Include="Game\Chat\Commands\MiscCommands.cs" />
     <Compile Include="Game\Chat\Commands\MovementCommands.cs" />
     <Compile Include="Game\Globals.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Game\Managers\WorldManager.cs" />
     <Compile Include="Game\ObjectDefines\CreatureData.cs" />
     <Compile Include="Game\ObjectDefines\CreatureStats.cs" />
+    <Compile Include="Game\ObjectDefines\GameObjectStats.cs" />
     <Compile Include="Game\Packets\PacketHandler\AuthenticationHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\CacheHandler.cs" />
     <Compile Include="Game\Packets\PacketHandler\CharacterHandler.cs" />
@@ -79,8 +81,10 @@
     <Compile Include="Game\Packets\PacketHandler\ObjectHandler.cs" />
     <Compile Include="Game\Packets\PacketManager.cs" />
     <Compile Include="Game\Spawns\CreatureSpawn.cs" />
+    <Compile Include="Game\Spawns\GameObjectSpawn.cs" />
     <Compile Include="Game\WorldEntities\Character.cs" />
     <Compile Include="Game\WorldEntities\Creature.cs" />
+    <Compile Include="Game\WorldEntities\GameObject.cs" />
     <Compile Include="Game\WorldEntities\Skill.cs" />
     <Compile Include="Game\WorldEntities\Spell.cs" />
     <Compile Include="Game\WorldEntities\WorldObject.cs" />

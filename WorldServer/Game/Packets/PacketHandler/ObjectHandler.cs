@@ -17,11 +17,10 @@
 
 using Framework.Constants;
 using Framework.Network.Packets;
+using System.Collections.Generic;
 using WorldServer.Game.Managers;
 using WorldServer.Game.WorldEntities;
 using WorldServer.Network;
-using Framework.Logging;
-using System.Collections.Generic;
 
 namespace WorldServer.Game.PacketHandler
 {
@@ -97,7 +96,7 @@ namespace WorldServer.Game.PacketHandler
                 }
             }
 
-            character.AddSpawnsToWorld(ref session);
+            character.AddCreatureSpawnsToWorld(ref session);
         }
 
         public static PacketWriter HandleObjectDestroy(ref WorldClass session, ulong guid)
