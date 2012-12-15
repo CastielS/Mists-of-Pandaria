@@ -23,6 +23,7 @@ using WorldServer.Game.Managers;
 using WorldServer.Game.ObjectDefines;
 using WorldServer.Game.WorldEntities;
 using WorldServer.Network;
+using Framework.Logging;
 
 namespace WorldServer.Game.Packets.PacketHandler
 {
@@ -34,45 +35,51 @@ namespace WorldServer.Game.Packets.PacketHandler
             int id = packet.ReadInt32();
             ulong guid = packet.ReadUInt64();
 
-            CreatureStats stats = DataMgr.FindCreature(id).Stats;
+            Creature creature = DataMgr.FindCreature(id);
+            if (creature != null)
+            {
+                CreatureStats stats = creature.Stats;
 
-            PacketWriter creatureStats = new PacketWriter(LegacyMessage.CreatureStats);
+                PacketWriter creatureStats = new PacketWriter(LegacyMessage.CreatureStats);
 
-            creatureStats.WriteInt32(stats.Id);
-            creatureStats.WriteCString(stats.Name);
+                creatureStats.WriteInt32(stats.Id);
+                creatureStats.WriteCString(stats.Name);
 
-            for (int i = 0; i < 7; i++)
+                for (int i = 0; i < 7; i++)
+                    creatureStats.WriteCString("");
+
+                creatureStats.WriteCString(stats.SubName);
                 creatureStats.WriteCString("");
+                creatureStats.WriteCString(stats.IconName);
 
-            creatureStats.WriteCString(stats.SubName);
-            creatureStats.WriteCString("");
-            creatureStats.WriteCString(stats.IconName);
+                foreach (var v in stats.Flag)
+                    creatureStats.WriteInt32(v);
 
-            foreach (var v in stats.Flag)
-                creatureStats.WriteInt32(v);
+                creatureStats.WriteInt32(stats.Type);
+                creatureStats.WriteInt32(stats.Family);
+                creatureStats.WriteInt32(stats.Rank);
 
-            creatureStats.WriteInt32(stats.Type);
-            creatureStats.WriteInt32(stats.Family);
-            creatureStats.WriteInt32(stats.Rank);
+                foreach (var v in stats.QuestKillNpcId)
+                    creatureStats.WriteInt32(v);
 
-            foreach (var v in stats.QuestKillNpcId)
-                creatureStats.WriteInt32(v);
+                foreach (var v in stats.DisplayInfoId)
+                    creatureStats.WriteInt32(v);
 
-            foreach (var v in stats.DisplayInfoId)
-                creatureStats.WriteInt32(v);
+                creatureStats.WriteFloat(stats.HealthModifier);
+                creatureStats.WriteFloat(stats.PowerModifier);
 
-            creatureStats.WriteFloat(stats.HealthModifier);
-            creatureStats.WriteFloat(stats.PowerModifier);
+                creatureStats.WriteUInt8(stats.RacialLeader);
 
-            creatureStats.WriteUInt8(stats.RacialLeader);
+                foreach (var v in stats.QuestItemId)
+                    creatureStats.WriteInt32(v);
 
-            foreach (var v in stats.QuestItemId)
-                creatureStats.WriteInt32(v);
+                creatureStats.WriteInt32(stats.MovementInfoId);
+                creatureStats.WriteInt32(stats.ExpansionRequired);
 
-            creatureStats.WriteInt32(stats.MovementInfoId);
-            creatureStats.WriteInt32(stats.ExpansionRequired);
-
-            session.Send(ref creatureStats);
+                session.Send(ref creatureStats);
+            }
+            else
+                Log.Message(LogType.DEBUG, "Creature (Id: {0}) not found.", id);
         }
 
         [Opcode(ClientMessage.GameObjectStats, "16357")]
@@ -81,33 +88,39 @@ namespace WorldServer.Game.Packets.PacketHandler
             int id = packet.ReadInt32();
             ulong guid = packet.ReadUInt64();
 
-            GameObjectStats stats = DataMgr.FindGameObject(id).Stats;
+            GameObject gObject = DataMgr.FindGameObject(id);
+            if (gObject != null)
+            {
+                GameObjectStats stats = gObject.Stats;
 
-            PacketWriter gameObjectStats = new PacketWriter(LegacyMessage.GameObjectStats);
+                PacketWriter gameObjectStats = new PacketWriter(LegacyMessage.GameObjectStats);
 
-            gameObjectStats.WriteInt32(stats.Id);
-            gameObjectStats.WriteInt32(stats.Type);
-            gameObjectStats.WriteInt32(stats.DisplayInfoId);
-            gameObjectStats.WriteCString(stats.Name);
+                gameObjectStats.WriteInt32(stats.Id);
+                gameObjectStats.WriteInt32(stats.Type);
+                gameObjectStats.WriteInt32(stats.DisplayInfoId);
+                gameObjectStats.WriteCString(stats.Name);
 
-            for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 3; i++)
+                    gameObjectStats.WriteCString("");
+
+                gameObjectStats.WriteCString(stats.IconName);
+                gameObjectStats.WriteCString(stats.CastBarCaption);
                 gameObjectStats.WriteCString("");
 
-            gameObjectStats.WriteCString(stats.IconName);
-            gameObjectStats.WriteCString(stats.CastBarCaption);
-            gameObjectStats.WriteCString("");
+                foreach (var v in stats.Data)
+                    gameObjectStats.WriteInt32(v);
 
-            foreach (var v in stats.Data)
-                gameObjectStats.WriteInt32(v);
+                gameObjectStats.WriteFloat(stats.Size);
 
-            gameObjectStats.WriteFloat(stats.Size);
+                foreach (var v in stats.QuestItemId)
+                    gameObjectStats.WriteInt32(v);
 
-            foreach (var v in stats.QuestItemId)
-                gameObjectStats.WriteInt32(v);
+                gameObjectStats.WriteInt32(stats.ExpansionRequired);
 
-            gameObjectStats.WriteInt32(stats.ExpansionRequired);
-
-            session.Send(ref gameObjectStats);
+                session.Send(ref gameObjectStats);
+            }
+            else
+                Log.Message(LogType.DEBUG, "Gameobject (Id: {0}) not found.", id);
         }
 
 
