@@ -42,7 +42,7 @@ namespace WorldServer.Game.PacketHandler
 
             authChallenge.WriteUInt8(1);
 
-            session.Send(authChallenge);
+            session.Send(ref authChallenge);
         }
 
         [Opcode(ClientMessage.AuthSession, "16357")]
@@ -146,7 +146,7 @@ namespace WorldServer.Game.PacketHandler
 
             authResponse.WriteUInt8((byte)AuthCodes.AUTH_OK);
 
-            session.Send(authResponse);
+            session.Send(ref authResponse);
 
             MiscHandler.HandleUpdateClientCacheVersion(ref session);
             TutorialHandler.HandleTutorialFlags(ref session);

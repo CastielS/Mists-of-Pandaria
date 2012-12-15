@@ -18,16 +18,16 @@
 using System.Text;
 using WorldServer.Game.Managers;
 using WorldServer.Game.Packets.PacketHandler;
+using WorldServer.Network;
 
 namespace WorldServer.Game.Chat.Commands
 {
     public class MiscCommands : Globals
     {
         [ChatCommand("help")]
-        public static void Help(string[] args)
+        public static void Help(string[] args, ref WorldClass session)
         {
             StringBuilder commandList = new StringBuilder();
-            var session = WorldMgr.Session;
 
             foreach (var command in ChatCommandParser.ChatCommands)
             {
@@ -45,10 +45,8 @@ namespace WorldServer.Game.Chat.Commands
         }
 
         [ChatCommand("save")]
-        public static void Save(string[] args)
+        public static void Save(string[] args, ref WorldClass session)
         {
-            var session = WorldMgr.GetSession(WorldMgr.Session.Character.Guid);
-
             ObjectMgr.SavePositionToDB(session.Character);
 
             ChatHandler.SendMessageByType(ref session, 0, 0, "Your character is successfully saved to the database!");

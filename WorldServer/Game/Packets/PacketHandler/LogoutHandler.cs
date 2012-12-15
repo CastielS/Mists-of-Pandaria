@@ -31,10 +31,18 @@ namespace WorldServer.Game.Packets.PacketHandler
             var pChar = session.Character;
 
             ObjectMgr.SavePositionToDB(pChar);
-            WorldMgr.DeleteSession(pChar.Guid);
 
             PacketWriter logoutComplete = new PacketWriter(LegacyMessage.LogoutComplete);
-            session.Send(logoutComplete);
+            session.Send(ref logoutComplete);
+
+            // Destroy object after logout
+            PacketWriter objectDestroy = new PacketWriter(LegacyMessage.ObjectDestroy);
+
+            objectDestroy.WriteUInt64(pChar.Guid);
+            objectDestroy.WriteUInt8(0);
+
+            WorldMgr.SendToAllInMap(pChar.Guid, objectDestroy);
+            WorldMgr.DeleteSession(pChar.Guid);
         }
     }
 }

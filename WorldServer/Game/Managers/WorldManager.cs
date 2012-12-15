@@ -81,10 +81,23 @@ namespace WorldServer.Game.Managers
                     else
                         accountInitialized.WriteUInt32(0);
 
-            session.Send(accountInitialized);
+            session.Send(ref accountInitialized);
         }
 
-        public void SendToAllInZone(ulong guid, PacketWriter packet)
+        public void SendToAllInMap(ulong guid, PacketWriter packet)
+        {
+            var map = Sessions[guid].Character.Map;
+
+            foreach (var s in Sessions)
+            {
+                if (s.Value.Character.Map != map)
+                    continue;
+
+                s.Value.Send(ref packet);
+            }
+        }
+
+        public void SendToAllOtherInZone(ulong guid, PacketWriter packet)
         {
             var zone = Sessions[guid].Character.Zone;
 
@@ -93,7 +106,20 @@ namespace WorldServer.Game.Managers
                 if (s.Value.Character.Guid == guid || s.Value.Character.Zone != zone)
                     continue;
 
-                s.Value.Send(packet);
+                s.Value.Send(ref packet);
+            }
+        }
+
+        public void SendToAllOtherInMap(ulong guid, PacketWriter packet)
+        {
+            var map = Sessions[guid].Character.Map;
+
+            foreach (var s in Sessions)
+            {
+                if (s.Value.Character.Guid == guid || s.Value.Character.Map != map)
+                    continue;
+
+                s.Value.Send(ref packet);
             }
         }
 

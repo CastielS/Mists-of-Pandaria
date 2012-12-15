@@ -20,6 +20,8 @@ using Framework.Network.Packets;
 using WorldServer.Game.Managers;
 using WorldServer.Game.WorldEntities;
 using WorldServer.Network;
+using Framework.Logging;
+using System.Collections.Generic;
 
 namespace WorldServer.Game.PacketHandler
 {
@@ -30,7 +32,7 @@ namespace WorldServer.Game.PacketHandler
             WorldObject character = session.Character;
             PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
 
-            updateObject.WriteUInt16((ushort)character.ToCharacter().Map);
+            updateObject.WriteUInt16((ushort)character.Map);
             updateObject.WriteUInt32(1);
             updateObject.WriteUInt8(1);
             updateObject.WriteGuid(character.Guid);
@@ -41,68 +43,69 @@ namespace WorldServer.Game.PacketHandler
 
             character.WriteUpdateFields(ref updateObject);
             character.WriteDynamicUpdateFields(ref updateObject);
+            session.Send(ref updateObject);
 
-            session.Send(updateObject);
+            var tempSessions = new Dictionary<ulong, WorldClass>(WorldMgr.Sessions);
+            tempSessions.Remove(character.Guid);
 
-            var tempSessions = WorldMgr.Sessions;
-
-            foreach (var s in tempSessions)
+            if (tempSessions != null)
             {
-                if (s.Value.Character.Guid == character.Guid || (character as Character).Zone != s.Value.Character.Zone)
-                    continue;
+                foreach (var s in tempSessions)
+                {
+                    if (character.Map != s.Value.Character.Map)
+                        continue;
 
-                updateObject = new PacketWriter(LegacyMessage.UpdateObject);
+                    updateObject = new PacketWriter(LegacyMessage.UpdateObject);
 
-                updateObject.WriteUInt16((ushort)(character as Character).Map);
-                updateObject.WriteUInt32(1);
-                updateObject.WriteUInt8(1);
-                updateObject.WriteGuid(character.Guid);
-                updateObject.WriteUInt8(4);
+                    updateObject.WriteUInt16((ushort)character.Map);
+                    updateObject.WriteUInt32(1);
+                    updateObject.WriteUInt8(1);
+                    updateObject.WriteGuid(character.Guid);
+                    updateObject.WriteUInt8(4);
 
-                updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
-                WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref character, updateFlags);
+                    updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+                    WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref character, updateFlags);
 
-                character.WriteUpdateFields(ref updateObject);
-                character.WriteDynamicUpdateFields(ref updateObject);
+                    character.WriteUpdateFields(ref updateObject);
+                    character.WriteDynamicUpdateFields(ref updateObject);
 
-                s.Value.Send(updateObject);
+                    s.Value.Send(ref updateObject);
+                }
+
+                foreach (var s in tempSessions)
+                {
+                    WorldObject pChar = s.Value.Character;
+
+                    if (pChar.Map != character.Map)
+                        continue;
+
+                    updateObject = new PacketWriter(LegacyMessage.UpdateObject);
+
+                    updateObject.WriteUInt16((ushort)pChar.Map);
+                    updateObject.WriteUInt32(1);
+                    updateObject.WriteUInt8(1);
+                    updateObject.WriteGuid(pChar.Guid);
+                    updateObject.WriteUInt8(4);
+
+                    updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+                    WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref pChar, updateFlags);
+
+                    pChar.WriteUpdateFields(ref updateObject);
+                    pChar.WriteDynamicUpdateFields(ref updateObject);
+
+                    session.Send(ref updateObject);
+                }
             }
-
-            foreach (var s in tempSessions)
-            {
-                WorldObject pChar = s.Value.Character;
-
-                if (pChar.Guid == character.Guid || pChar.ToCharacter().Zone != character.ToCharacter().Zone)
-                    continue;
-
-                updateObject = new PacketWriter(LegacyMessage.UpdateObject);
-
-                updateObject.WriteUInt16((ushort)pChar.Map);
-                updateObject.WriteUInt32(1);
-                updateObject.WriteUInt8(1);
-                updateObject.WriteGuid(pChar.Guid);
-                updateObject.WriteUInt8(4);
-
-                updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
-                WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref pChar, updateFlags);
-
-                character.WriteUpdateFields(ref updateObject);
-                character.WriteDynamicUpdateFields(ref updateObject);
-
-                session.Send(updateObject);
-            }
-
-            character.AddSpawnsToWorld(ref session);
         }
 
-        public static void HandleObjectDestroy(ref WorldClass session, ulong guid)
+        public static PacketWriter HandleObjectDestroy(ref WorldClass session, ulong guid)
         {
             PacketWriter objectDestroy = new PacketWriter(LegacyMessage.ObjectDestroy);
 
             objectDestroy.WriteUInt64(guid);
             objectDestroy.WriteUInt8(0);
 
-            session.Send(objectDestroy);
+            return objectDestroy;
         }
     }
 }

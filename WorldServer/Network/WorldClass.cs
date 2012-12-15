@@ -68,7 +68,7 @@ namespace WorldServer.Network
             PacketWriter TransferInitiate = new PacketWriter(Message.TransferInitiate);
             TransferInitiate.WriteCString("RLD OF WARCRAFT CONNECTION - SERVER TO CLIENT");
 
-            Send(TransferInitiate);
+            Send(ref TransferInitiate);
 
             clientSocket.BeginReceive(DataBuffer, 0, DataBuffer.Length, SocketFlags.None, Receive, null);
         }
@@ -124,7 +124,7 @@ namespace WorldServer.Network
             data[3] = (byte)(0xFF & (opcode >> 8));
         }
 
-        public void Send(PacketWriter packet)
+        public void Send(ref PacketWriter packet)
         {
             if (packet.Opcode == 0)
                 return;
@@ -150,10 +150,11 @@ namespace WorldServer.Network
                 }
 
                 clientSocket.Send(buffer, 0, buffer.Length, SocketFlags.None);
-                packet.Flush();
 
                 string clientInfo = ((IPEndPoint)clientSocket.RemoteEndPoint).Address + ":" + ((IPEndPoint)clientSocket.RemoteEndPoint).Port;
                 PacketLog.WritePacket(clientInfo, packet);
+
+                packet.Flush();
             }
             catch (Exception ex)
             {

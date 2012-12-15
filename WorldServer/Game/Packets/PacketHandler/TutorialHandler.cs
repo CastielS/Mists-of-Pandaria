@@ -29,7 +29,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             for (int i = 0; i < 8; i++)
                 tutorialFlags.WriteUInt32(0);
 
-            session.Send(tutorialFlags);
+            session.Send(ref tutorialFlags);
         }
     }
 }

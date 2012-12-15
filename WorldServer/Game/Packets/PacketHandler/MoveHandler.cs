@@ -891,10 +891,14 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             moveUpdate.WriteFloat(vector.Y);
 
-            Character pChar = WorldMgr.GetSession(guid).Character;
-            ObjectMgr.SetPosition(ref pChar, vector, false);
+            var session = WorldMgr.GetSession(guid);
+            if (session != null)
+            {
+                Character pChar = WorldMgr.GetSession(guid).Character;
+                ObjectMgr.SetPosition(ref pChar, vector, false);
 
-            WorldMgr.SendToAllInZone(guid, moveUpdate);
+                WorldMgr.SendToAllOtherInZone(guid, moveUpdate);
+            }
         }
 
         public static void HandleMoveSetWalkSpeed(ref WorldClass session, float speed = 2.5f)
@@ -910,7 +914,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             BitPack.WriteGuidBytes(1, 6, 3, 0, 7, 4, 2, 5);
 
-            session.Send(setWalkSpeed);
+            session.Send(ref setWalkSpeed);
         }
 
         public static void HandleMoveSetRunSpeed(ref WorldClass session, float speed = 7f)
@@ -926,7 +930,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             setRunSpeed.WriteUInt32(0);
             BitPack.WriteGuidBytes(3, 6, 0, 4, 1, 5, 2);
 
-            session.Send(setRunSpeed);
+            session.Send(ref setRunSpeed);
         }
 
         public static void HandleMoveSetSwimSpeed(ref WorldClass session, float speed = 4.72222f)
@@ -943,7 +947,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             setSwimSpeed.WriteFloat(speed);
             BitPack.WriteGuidBytes(6);
 
-            session.Send(setSwimSpeed);
+            session.Send(ref setSwimSpeed);
         }
 
         public static void HandleMoveSetFlightSpeed(ref WorldClass session, float speed = 7f)
@@ -960,7 +964,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             setFlightSpeed.WriteUInt32(0);
             BitPack.WriteGuidBytes(5, 1, 3);
 
-            session.Send(setFlightSpeed);
+            session.Send(ref setFlightSpeed);
         }
 
         public static void HandleMoveSetCanFly(ref WorldClass session)
@@ -975,7 +979,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             BitPack.WriteGuidBytes(5, 3, 1, 6, 7, 2, 4, 0);
 
-            session.Send(setCanFly);
+            session.Send(ref setCanFly);
         }
 
         public static void HandleMoveUnsetCanFly(ref WorldClass session)
@@ -990,7 +994,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             BitPack.WriteGuidBytes(3, 1, 5, 7, 0, 6, 2, 4);
 
-            session.Send(unsetCanFly);
+            session.Send(ref unsetCanFly);
         }
 
         public static void HandleMoveTeleport(ref WorldClass session, Vector4 vector)
@@ -1041,7 +1045,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             BitPack.WriteGuidBytes(2, 1, 7, 5, 6, 4, 0);
 
-            session.Send(moveTeleport);
+            session.Send(ref moveTeleport);
         }
 
         public static void HandleTransferPending(ref WorldClass session, uint mapId)
@@ -1066,7 +1070,7 @@ namespace WorldServer.Game.Packets.PacketHandler
                 transferPending.WriteUInt32(0);
             }
             
-            session.Send(transferPending);
+            session.Send(ref transferPending);
         }
 
         public static void HandleNewWorld(ref WorldClass session, Vector4 vector, uint mapId)
@@ -1079,7 +1083,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             newWorld.WriteFloat(vector.X);
             newWorld.WriteFloat(vector.Z);
 
-            session.Send(newWorld);
+            session.Send(ref newWorld);
         }
     }
 }

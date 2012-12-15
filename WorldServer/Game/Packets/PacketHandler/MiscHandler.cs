@@ -35,7 +35,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             motd.WriteCString("Arctium MoP test");
             motd.WriteCString("Welcome to our MoP server test.");
             motd.WriteCString("Your development team =)");
-            session.Send(motd);
+            session.Send(ref motd);
         }
 
         [Opcode(ClientMessage.Ping, "16357")]
@@ -47,7 +47,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             PacketWriter pong = new PacketWriter(JAMCCMessage.Pong);
             pong.WriteUInt32(sequence);
 
-            session.Send(pong);
+            session.Send(ref pong);
         }
 
         [Opcode(ClientMessage.LogDisconnect, "16357")]
@@ -70,7 +70,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             cacheVersion.WriteUInt32(0);
 
-            session.Send(cacheVersion);
+            session.Send(ref cacheVersion);
         }
 
         [Opcode(ClientMessage.LoadingScreenNotify, "16357")]

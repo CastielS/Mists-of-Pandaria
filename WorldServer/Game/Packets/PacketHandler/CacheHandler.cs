@@ -72,16 +72,16 @@ namespace WorldServer.Game.Packets.PacketHandler
             creatureStats.WriteInt32(stats.MovementInfoId);
             creatureStats.WriteInt32(stats.ExpansionRequired);
 
-            session.Send(creatureStats);
+            session.Send(ref creatureStats);
         }
 
         [Opcode(ClientMessage.NameCache, "16357")]
         public static void HandleNameCache(ref PacketReader packet, ref WorldClass session)
         {
-            Character pChar = session.Character;
-
             ulong guid = packet.ReadUInt64();
             uint realmId = packet.ReadUInt32();
+
+            var pChar = WorldMgr.GetSession(guid).Character;
 
             PacketWriter nameCache = new PacketWriter(LegacyMessage.NameCache);
 
@@ -94,7 +94,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             nameCache.WriteUInt8(pChar.Class);
             nameCache.WriteUInt8(0);
 
-            session.Send(nameCache);
+            session.Send(ref nameCache);
         }
 
         [Opcode(ClientMessage.RealmCache, "16357")]
@@ -115,7 +115,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             nameCache.WriteCString(realmName);
             nameCache.WriteCString(realmName);
 
-            session.Send(nameCache);
+            session.Send(ref nameCache);
         }
     }
 }

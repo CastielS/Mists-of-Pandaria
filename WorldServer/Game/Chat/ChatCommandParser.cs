@@ -19,13 +19,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Framework.Configuration;
+using WorldServer.Network;
 
 namespace WorldServer.Game.Chat
 {
     public class ChatCommandParser
     {
         public static Dictionary<string, HandleChatCommand> ChatCommands = new Dictionary<string, HandleChatCommand>();
-        public delegate void HandleChatCommand(string[] args);
+        public delegate void HandleChatCommand(string[] args, ref WorldClass session);
 
         public static void DefineChatCommands()
         {
@@ -42,13 +43,13 @@ namespace WorldServer.Game.Chat
             }
         }
 
-        public static void ExecuteChatHandler(string chatCommand)
+        public static void ExecuteChatHandler(string chatCommand, ref WorldClass session)
         {
             var args = chatCommand.Split(new string[] { " " }, StringSplitOptions.None);
             var command = args[0].Remove(0, 1);
 
             if (ChatCommands.ContainsKey(command))
-                ChatCommands[command].Invoke(args);
+                ChatCommands[command].Invoke(args, ref session);
         }
 
         public static bool CheckForCommand(string command)

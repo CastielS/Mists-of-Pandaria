@@ -21,15 +21,15 @@ using WorldServer.Game.Packets.PacketHandler;
 using WorldServer.Game.Spawns;
 using WorldServer.Game.WorldEntities;
 using WorldServer.Game.PacketHandler;
+using WorldServer.Network;
 
 namespace WorldServer.Game.Chat.Commands
 {
     public class CreatureCommands : Globals
     {
         [ChatCommand("addnpc")]
-        public static void AddNpc(string[] args)
+        public static void AddNpc(string[] args, ref WorldClass session)
         {
-            var session = WorldMgr.GetSession(WorldMgr.Session.Character.Guid);
             var pChar = session.Character;
 
             int creatureId = CommandParser.Read<int>(args, 1);
@@ -57,17 +57,16 @@ namespace WorldServer.Game.Chat.Commands
         }
 
         [ChatCommand("delnpc")]
-        public static void DeleteNpc(string[] args)
+        public static void DeleteNpc(string[] args, ref WorldClass session)
         {
-            var session = WorldMgr.GetSession(WorldMgr.Session.Character.Guid);
             var pChar = session.Character;
             var spawn = SpawnMgr.FindSpawn(pChar.TargetGuid);
 
             if (spawn != null)
             {
-                ObjectHandler.HandleObjectDestroy(ref session, pChar.TargetGuid);
-
                 SpawnMgr.RemoveSpawn(spawn);
+
+                WorldMgr.SendToAllInMap(pChar.Guid, ObjectHandler.HandleObjectDestroy(ref session, pChar.TargetGuid));
                 ChatHandler.SendMessageByType(ref session, 0, 0, "Selected Spawn successfully removed.");
             }
             else

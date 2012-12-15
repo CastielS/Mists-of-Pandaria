@@ -96,7 +96,7 @@ namespace WorldServer.Game.Spawns
                 WriteUpdateFields(ref updateObject);
                 WriteDynamicUpdateFields(ref updateObject);
 
-                v.Value.Send(updateObject);
+                v.Value.Send(ref updateObject);
             }
         }
 

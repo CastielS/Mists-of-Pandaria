@@ -39,7 +39,7 @@ namespace WorldServer.Game.PacketHandler
             pChar.SpellList.ForEach(spell =>
                 writer.WriteUInt32(spell.SpellId));
 
-            session.Send(writer);
+            session.Send(ref writer);
         }
     }
 }

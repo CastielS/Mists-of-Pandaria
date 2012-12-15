@@ -37,7 +37,7 @@ namespace WorldServer.Game.PacketHandler
 
             uiTime.WriteUnixTime();
 
-            session.Send(uiTime);
+            session.Send(ref uiTime);
         }
 
         [Opcode(ClientMessage.SetRealmSplitState, "16357")]
@@ -51,7 +51,7 @@ namespace WorldServer.Game.PacketHandler
             realmSplitStateResp.WriteUInt32(realmSplitState);
             realmSplitStateResp.WriteCString("01/01/01");
 
-            session.Send(realmSplitStateResp);
+            session.Send(ref realmSplitStateResp);
         }
     }
 }

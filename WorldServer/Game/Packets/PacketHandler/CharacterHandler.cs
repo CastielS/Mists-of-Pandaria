@@ -150,7 +150,7 @@ namespace WorldServer.Game.PacketHandler
                 BitPack.Flush();
             };
 
-            session.Send(enumCharacters);
+            session.Send(ref enumCharacters);
         }
 
         [Opcode(ClientMessage.RequestCharCreate, "16357")]
@@ -178,7 +178,7 @@ namespace WorldServer.Game.PacketHandler
             {
                 // Name already in use
                 writer.WriteUInt8(0x32);
-                session.Send(writer);
+                session.Send(ref writer);
                 return;
             }
 
@@ -186,7 +186,7 @@ namespace WorldServer.Game.PacketHandler
             if (result.Count == 0)
             {
                 writer.WriteUInt8(0x31);
-                session.Send(writer);
+                session.Send(ref writer);
                 return;
             }
 
@@ -203,7 +203,7 @@ namespace WorldServer.Game.PacketHandler
 
             // Success
             writer.WriteUInt8(0x2F);
-            session.Send(writer);
+            session.Send(ref writer);
         }
 
         [Opcode(ClientMessage.RequestCharDelete, "16357")]
@@ -213,7 +213,7 @@ namespace WorldServer.Game.PacketHandler
 
             PacketWriter writer = new PacketWriter(LegacyMessage.ResponseCharacterDelete);
             writer.WriteUInt8(0x47);
-            session.Send(writer);
+            session.Send(ref writer);
 
             DB.Characters.Execute("DELETE FROM characters WHERE guid = ?", guid);
             DB.Characters.Execute("DELETE FROM character_spells WHERE guid = ?", guid);
@@ -246,7 +246,7 @@ namespace WorldServer.Game.PacketHandler
             BitPack.Flush();
 
             writer.WriteString(NewName);
-            session.Send(writer);
+            session.Send(ref writer);
         }
 
         [Opcode(ClientMessage.PlayerLogin, "16357")]

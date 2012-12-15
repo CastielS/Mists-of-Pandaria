@@ -35,10 +35,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             string chatMessage = packet.ReadString(messageLength);
 
             if (ChatCommandParser.CheckForCommand(chatMessage))
-            {
-                WorldMgr.Session = session;
-                ChatCommandParser.ExecuteChatHandler(chatMessage);
-            }
+                ChatCommandParser.ExecuteChatHandler(chatMessage, ref session);
             else
                 SendMessageByType(ref session, MessageType.ChatMessageSay, language, chatMessage);
         }
@@ -86,7 +83,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             messageChat.WriteCString(chatMessage);
             messageChat.WriteUInt16(0);
 
-            session.Send(messageChat);
+            session.Send(ref messageChat);
         }
     }
 }

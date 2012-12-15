@@ -34,7 +34,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             startCinematic.WriteUInt32(DBCStorage.RaceStorage[pChar.Race].CinematicSequence);
 
-            session.Send(startCinematic);
+            session.Send(ref startCinematic);
 
             if (pChar.LoginCinematic)
                 DB.Characters.Execute("UPDATE characters SET loginCinematic = 0 WHERE guid = ?", pChar.Guid);

@@ -37,8 +37,8 @@ namespace WorldServer.Game.WorldEntities
         public UInt64 TargetGuid;
 
         public bool IsInWorld { get; set; }
-        public uint Blocks;
-        public byte[] Mask;
+        public byte Blocks;
+        public BitArray Mask;
         public int DataLength;
         public Hashtable UpdateData = new Hashtable();
 
@@ -48,8 +48,8 @@ namespace WorldServer.Game.WorldEntities
         {
             IsInWorld = false;
             DataLength = dataLength;
-            Blocks = (uint)(DataLength + 31) / 32;
-            Mask = new byte[(Blocks * 4) << 2];
+            Blocks = (byte)((DataLength + 31) / 32);
+            Mask = new BitArray(dataLength, false);
         }
 
         public void SetUpdateField<T>(int index, T value, byte offset = 0)
@@ -59,7 +59,7 @@ namespace WorldServer.Game.WorldEntities
                 case "Byte":
                 case "UInt16":
                 {
-                    SetBit(index);
+                    Mask.Set(index, true);
 
                     if (UpdateData.ContainsKey(index))
                         UpdateData[index] = (uint)((uint)UpdateData[index] | (uint)((uint)Convert.ChangeType(value, typeof(uint)) << (offset * (value.GetType().Name == "Byte" ? 8 : 16))));
@@ -70,8 +70,8 @@ namespace WorldServer.Game.WorldEntities
                 }
                 case "UInt64":
                 {
-                    SetBit(index);
-                    SetBit(index + 1);
+                    Mask.Set(index, true);
+                    Mask.Set(index + 1, true);
 
                     ulong tmpValue = (ulong)Convert.ChangeType(value, typeof(ulong));
 
@@ -85,7 +85,7 @@ namespace WorldServer.Game.WorldEntities
                 case "Single":
                 default:
                 {
-                    SetBit(index);
+                    Mask.Set(index, true);
                     UpdateData[index] = value;
 
                     break;
@@ -95,12 +95,12 @@ namespace WorldServer.Game.WorldEntities
 
         public void WriteUpdateFields(ref PacketWriter packet, bool sendAllFields = true)
         {
-            packet.WriteUInt8((byte)Blocks);
-            packet.Write(Mask, 0, (int)Blocks * 4);
+            packet.WriteUInt8(Blocks);
+            packet.WriteBitArray(Mask, (int)Blocks * 4);    // Int32 = 4 Bytes
 
             for (int i = 0; i < DataLength; i++)
             {
-                if (GetBit(i))
+                if (Mask.Get(i))
                 {
                     try
                     {
@@ -140,16 +140,6 @@ namespace WorldServer.Game.WorldEntities
             packet.WriteUInt8(0);
         }
 
-        public void SetBit(int index)
-        {
-            Mask[index >> 3] |= (byte)(1 << (index & 0x7));
-        }
-
-        public bool GetBit(int index)
-        {
-            return (Mask[index >> 3] & 1 << (index & 0x7)) != 0;
-        }
-
         public void AddSpawnsToWorld(ref WorldClass session)
         {
             var pChar = session.Character;
@@ -182,7 +172,7 @@ namespace WorldServer.Game.WorldEntities
                     spawn.WriteUpdateFields(ref updateObject);
                     spawn.WriteDynamicUpdateFields(ref updateObject);
 
-                    session.Send(updateObject);
+                    session.Send(ref updateObject);
                 }
             }
         }
