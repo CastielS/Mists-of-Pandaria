@@ -96,6 +96,8 @@ namespace WorldServer.Game.PacketHandler
                     session.Send(ref updateObject);
                 }
             }
+
+            character.AddSpawnsToWorld(ref session);
         }
 
         public static PacketWriter HandleObjectDestroy(ref WorldClass session, ulong guid)
