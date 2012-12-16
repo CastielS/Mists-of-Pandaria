@@ -18,11 +18,14 @@
 using Framework.Configuration;
 using System;
 using DefaultConsole = System.Console;
+using Framework.ObjectDefines;
 
 namespace Framework.Logging
 {
     public class Log
     {
+        public static string ServerType { get; set; }
+
         static public void Message()
         {
             SetLogger(LogType.DEFAULT, "");
@@ -65,7 +68,7 @@ namespace Framework.Logging
                     break;
             }
 
-            if ((WorldConfig.LogLevel & type) == type)
+            if (((Log.ServerType == "World" ? WorldConfig.LogLevel : RealmConfig.LogLevel) & type) == type)
             {
                 if (type.Equals(LogType.INIT) | type.Equals(LogType.DEFAULT))
                     DefaultConsole.WriteLine(text, args);

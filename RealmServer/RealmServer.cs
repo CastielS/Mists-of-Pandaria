@@ -27,6 +27,8 @@ namespace RealmServer
     {
         static void Main(string[] args)
         {
+            Log.ServerType = "Realm";
+
             Log.Message(LogType.INIT, "___________________________________________");
             Log.Message(LogType.INIT, "    __                                     ");
             Log.Message(LogType.INIT, "    / |                     ,              ");

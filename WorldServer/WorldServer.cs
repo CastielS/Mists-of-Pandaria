@@ -33,6 +33,8 @@ namespace WorldServer
     {
         static void Main(string[] args)
         {
+            Log.ServerType = "World";
+
             Log.Message(LogType.INIT, "___________________________________________");
             Log.Message(LogType.INIT, "    __                                     ");
             Log.Message(LogType.INIT, "    / |                     ,              ");

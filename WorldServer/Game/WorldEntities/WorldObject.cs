@@ -180,14 +180,14 @@ namespace WorldServer.Game.WorldEntities
         {
             var pChar = session.Character;
 
-            UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+            UpdateFlag updateFlags = UpdateFlag.Rotation | UpdateFlag.StationaryPosition;
 
             if (Globals.SpawnMgr.GameObjectSpawns.Count > 0)
             {
                 foreach (var s in Globals.SpawnMgr.GameObjectSpawns)
                 {
                     WorldObject spawn = s.Key as GameObjectSpawn;
-                    spawn.ToCreature().SetCreatureFields();
+                    spawn.ToGameObject().SetGameObjectFields();
 
                     var data = s.Value as GameObject;
 
@@ -200,7 +200,7 @@ namespace WorldServer.Game.WorldEntities
                     updateObject.WriteUInt32(1);
                     updateObject.WriteUInt8(1);
                     updateObject.WriteGuid(spawn.Guid);
-                    updateObject.WriteUInt8(3);
+                    updateObject.WriteUInt8(5);
 
                     Globals.WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref spawn, updateFlags);
 
@@ -227,5 +227,9 @@ namespace WorldServer.Game.WorldEntities
             return this as CreatureSpawn;
         }
 
+        public GameObjectSpawn ToGameObject()
+        {
+            return this as GameObjectSpawn;
+        }
     }
 }

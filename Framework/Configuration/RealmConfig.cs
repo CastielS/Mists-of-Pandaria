@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Framework.Logging;
+
 namespace Framework.Configuration
 {
     public static class RealmConfig
@@ -29,5 +31,7 @@ namespace Framework.Configuration
 
         public static string BindIP = config.Read("Bind.IP", "0.0.0.0");
         public static uint BindPort = config.Read<uint>("Bind.Port", 3724);
+
+        public static LogType LogLevel = (LogType)config.Read<uint>("LogLevel", 0, true);
     }
 }

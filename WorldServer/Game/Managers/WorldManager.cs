@@ -246,6 +246,14 @@ namespace WorldServer.Game.Managers
                 packet.WriteFloat((float)MovementSpeed.FlySpeed);
             }
 
+            if (values.HasStationaryPosition)
+            {
+                packet.WriteFloat(wObject.Position.X);
+                packet.WriteFloat(wObject.Position.W);
+                packet.WriteFloat(wObject.Position.Y);
+                packet.WriteFloat(wObject.Position.Z);
+            }
+
             if (values.HasRotation)
             {
                 // Packed orientation
