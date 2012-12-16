@@ -100,12 +100,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="arctium_world.ico" />
     <None Include="libeay32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="arctium_world.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
