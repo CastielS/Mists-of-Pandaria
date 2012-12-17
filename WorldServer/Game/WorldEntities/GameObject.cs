@@ -36,6 +36,7 @@ namespace WorldServer.Game.WorldEntities
 
                 Stats.Id             = result.Read<Int32>(0, "Id");
                 Stats.Type           = result.Read<Int32>(0, "Type");
+                Stats.DisplayInfoId  = result.Read<Int32>(0, "DisplayInfoId");
                 Stats.Name           = result.Read<String>(0, "Name");
                 Stats.IconName       = result.Read<String>(0, "IconName");
                 Stats.CastBarCaption = result.Read<String>(0, "CastBarCaption");
@@ -43,7 +44,7 @@ namespace WorldServer.Game.WorldEntities
                 for (int i = 0; i < Stats.Data.Capacity; i++)
                     Stats.Data.Add(result.Read<Int32>(0, "Data", i));
 
-                Stats.Size = result.Read<Int32>(0, "Size");
+                Stats.Size = result.Read<Single>(0, "Size");
 
                 for (int i = 0; i < Stats.QuestItemId.Capacity; i++)
                     Stats.QuestItemId.Add(result.Read<Int32>(0, "QuestItemId", i));

@@ -75,7 +75,7 @@ namespace WorldServer.Game.Managers
                         X = result.Read<Single>(i, "X"),
                         Y = result.Read<Single>(i, "Y"),
                         Z = result.Read<Single>(i, "Z"),
-                        W = result.Read<Single>(i, "O")
+                        O = result.Read<Single>(i, "O")
                     },
 
                     Map = result.Read<UInt32>(i, "Map")
@@ -128,7 +128,7 @@ namespace WorldServer.Game.Managers
                         X = result.Read<Single>(i, "X"),
                         Y = result.Read<Single>(i, "Y"),
                         Z = result.Read<Single>(i, "Z"),
-                        W = result.Read<Single>(i, "O")
+                        O = result.Read<Single>(i, "O")
                     },
 
                     Map = result.Read<UInt32>(i, "Map")

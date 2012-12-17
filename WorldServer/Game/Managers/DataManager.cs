@@ -172,6 +172,7 @@ namespace WorldServer.Game.Managers
 
                 Stats.Id = result.Read<Int32>(r, "Id");
                 Stats.Type = result.Read<Int32>(r, "Type");
+                Stats.DisplayInfoId = result.Read<Int32>(r, "DisplayInfoId");
                 Stats.Name = result.Read<String>(r, "Name");
                 Stats.IconName = result.Read<String>(r, "IconName");
                 Stats.CastBarCaption = result.Read<String>(r, "CastBarCaption");
@@ -179,7 +180,7 @@ namespace WorldServer.Game.Managers
                 for (int i = 0; i < Stats.Data.Capacity; i++)
                     Stats.Data.Add(result.Read<Int32>(r, "Data", i));
 
-                Stats.Size = result.Read<Int32>(r, "Size");
+                Stats.Size = result.Read<Single>(r, "Size");
 
                 for (int i = 0; i < Stats.QuestItemId.Capacity; i++)
                     Stats.QuestItemId.Add(result.Read<Int32>(r, "QuestItemId", i));

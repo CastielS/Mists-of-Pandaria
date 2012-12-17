@@ -15,33 +15,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Framework.Constants;
 using System;
 
 namespace Framework.ObjectDefines
 {
-    public class ObjectGuid
+    public class Quaternion
     {
-        public UInt64 Guid { get; set; }
+        public readonly float X;
+        public readonly float Y;
+        public readonly float Z;
+        public readonly float W;
 
-        public ObjectGuid(ulong low, int id, HighGuidType highType)
+        const float multiplier = 0.00000095367432f;
+
+        public Quaternion(long compressedQuaternion)
         {
-            Guid = (ulong)(low | ((ulong)id << 32) | (ulong)highType << 52);
+            long c = compressedQuaternion;
+
+            X = (c >> 42) * 0.00000047683716f;
+            Y = (c >> 21) * multiplier;
+            Z = c * multiplier;
+
+            W = (X * X) + (Y * Y) + (Z * Z);
+
+            if (Math.Abs(W - 1.0f) >= multiplier)
+                W = (float)Math.Sqrt(1.0f - W);
+            else
+                W = 0;
         }
 
-        public static HighGuidType GetGuidType(ulong guid)
+        public static long GetCompressed(float orientation)
         {
-            return (HighGuidType)(guid >> 52);
-        }
-
-        public static int GetId(ulong guid)
-        {
-            return (int)((guid >> 32) & 0xFFFFF);
-        }
-
-        public static ulong GetGuid(ulong guid)
-        {
-            return guid & 0xFFFFFFF;
+            float z = (float)Math.Sin(orientation / 1.9999945);
+            return (long)(z / Math.Atan(Math.Pow(2, -20)));
         }
     }
 }

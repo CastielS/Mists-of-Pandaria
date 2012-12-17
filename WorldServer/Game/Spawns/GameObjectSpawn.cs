@@ -54,9 +54,9 @@ namespace WorldServer.Game.Spawns
 
         public bool AddToDB()
         {
-            if (DB.World.Execute("INSERT INTO gameobject_spawns (Id, Map, X, Y, Z, O) VALUES (?, ?, ?, ?, ?, ?)", Id, Map, Position.X, Position.Y, Position.Z, Position.W))
+            if (DB.World.Execute("INSERT INTO gameobject_spawns (Id, Map, X, Y, Z, O) VALUES (?, ?, ?, ?, ?, ?)", Id, Map, Position.X, Position.Y, Position.Z, Position.O))
             {
-                Log.Message(LogType.DB, "Creature (Id: {0}) successfully spawned (Guid: {1})", Id, Guid);
+                Log.Message(LogType.DB, "Gameobject (Id: {0}) successfully spawned (Guid: {1})", Id, Guid);
                 return true;
             }
 
@@ -73,7 +73,7 @@ namespace WorldServer.Game.Spawns
             SetGameObjectFields();
 
             WorldObject obj = this;
-            UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+            UpdateFlag updateFlags = UpdateFlag.Rotation | UpdateFlag.StationaryPosition;
 
             foreach (var v in Globals.WorldMgr.Sessions)
             {
@@ -103,8 +103,8 @@ namespace WorldServer.Game.Spawns
             // ObjectFields
             SetUpdateField<UInt64>((int)ObjectFields.Guid, Guid);
             SetUpdateField<UInt64>((int)ObjectFields.Data, 0);
-            SetUpdateField<Int32>((int)ObjectFields.Entry, Id);
             SetUpdateField<Int32>((int)ObjectFields.Type, 0x21);
+            SetUpdateField<Int32>((int)ObjectFields.Entry, Id);
             SetUpdateField<Single>((int)ObjectFields.Scale, GameObject.Stats.Size);
 
             // GameObjectFields
@@ -114,11 +114,14 @@ namespace WorldServer.Game.Spawns
             SetUpdateField<Single>((int)GameObjectFields.ParentRotation, 0);
             SetUpdateField<Single>((int)GameObjectFields.ParentRotation + 1, 0);
             SetUpdateField<Single>((int)GameObjectFields.ParentRotation + 2, 0);
-            SetUpdateField<Single>((int)GameObjectFields.ParentRotation + 3, 0);
+            SetUpdateField<Single>((int)GameObjectFields.ParentRotation + 3, 1);
             SetUpdateField<Int32>((int)GameObjectFields.AnimProgress, 0);
             SetUpdateField<Int32>((int)GameObjectFields.FactionTemplate, 0);
             SetUpdateField<Int32>((int)GameObjectFields.Level, 0);
-            SetUpdateField<Int32>((int)GameObjectFields.PercentHealth, 0);
+            SetUpdateField<Byte>((int)GameObjectFields.PercentHealth, 1);
+            SetUpdateField<Byte>((int)GameObjectFields.PercentHealth, (byte)GameObject.Stats.Type, 1);
+            SetUpdateField<Byte>((int)GameObjectFields.PercentHealth, 0, 2);
+            SetUpdateField<Byte>((int)GameObjectFields.PercentHealth, 100, 3);
         }
     }
 }

@@ -149,7 +149,7 @@ namespace WorldServer.Game.Chat.Commands
                     X = CommandParser.Read<float>(args, 1),
                     Y = CommandParser.Read<float>(args, 2),
                     Z = CommandParser.Read<float>(args, 3),
-                    W = CommandParser.Read<float>(args, 4)
+                    O = CommandParser.Read<float>(args, 4)
                 };
 
                 mapId = CommandParser.Read<uint>(args, 5);
@@ -170,7 +170,7 @@ namespace WorldServer.Game.Chat.Commands
                     X = result.Read<float>(0, "X"),
                     Y = result.Read<float>(0, "Y"),
                     Z = result.Read<float>(0, "Z"),
-                    W = result.Read<float>(0, "O")
+                    O = result.Read<float>(0, "O")
                 };
 
                 mapId = result.Read<uint>(0, "Map");
@@ -183,6 +183,7 @@ namespace WorldServer.Game.Chat.Commands
             }
             else
             {
+                MoveHandler.HandleTransferPending(ref session, mapId);
                 MoveHandler.HandleNewWorld(ref session, vector, mapId);
 
                 ObjectMgr.SetPosition(ref pChar, vector);
@@ -204,7 +205,7 @@ namespace WorldServer.Game.Chat.Commands
                 X = result.Read<float>(0, "PosX"),
                 Y = result.Read<float>(0, "PosY"),
                 Z = result.Read<float>(0, "PosZ"),
-                W = result.Read<float>(0, "PosO")
+                O = result.Read<float>(0, "PosO")
             };
 
             uint mapId = result.Read<uint>(0, "Map");
@@ -231,7 +232,7 @@ namespace WorldServer.Game.Chat.Commands
         {
             var pChar = session.Character;
 
-            var message = String.Format("Your position is X: {0}, Y: {1}, Z: {2}, W(O): {3}, Map: {4}, Zone: {5}", pChar.Position.X, pChar.Position.Y, pChar.Position.Z, pChar.Position.W, pChar.Map, pChar.Zone);
+            var message = String.Format("Your position is X: {0}, Y: {1}, Z: {2}, W(O): {3}, Map: {4}, Zone: {5}", pChar.Position.X, pChar.Position.Y, pChar.Position.Z, pChar.Position.O, pChar.Map, pChar.Zone);
             ChatHandler.SendMessageByType(ref session, 0, 0, message);
         }
 
@@ -246,7 +247,7 @@ namespace WorldServer.Game.Chat.Commands
             if (result.Count == 0)
             {
                 if (DB.World.Execute("INSERT INTO teleport_locations (location, x, y, z, o, map) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)", location, pChar.Position.X, pChar.Position.Y, pChar.Position.Z, pChar.Position.W, pChar.Map))
+                    "VALUES (?, ?, ?, ?, ?, ?)", location, pChar.Position.X, pChar.Position.Y, pChar.Position.Z, pChar.Position.O, pChar.Map))
                 {
                     ChatHandler.SendMessageByType(ref session, 0, 0, String.Format("Teleport location '{0}' successfully added.", location));
                 }

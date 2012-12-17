@@ -125,7 +125,7 @@ namespace WorldServer.Game.Packets.PacketHandler
                 movementValues.Time = packet.ReadUInt32();
 
             if (movementValues.HasRotation)
-                vector.W = packet.ReadFloat();
+                vector.O = packet.ReadFloat();
 
             if (HasSplineElevation)
                 packet.ReadFloat();
@@ -249,7 +249,7 @@ namespace WorldServer.Game.Packets.PacketHandler
                 packet.ReadFloat();
 
             if (movementValues.HasRotation)
-                vector.W = packet.ReadFloat();
+                vector.O = packet.ReadFloat();
 
             if (movementValues.IsAlive)
                 movementValues.Time = packet.ReadUInt32();
@@ -361,7 +361,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             }*/
 
             if (movementValues.HasRotation)
-                vector.W = packet.ReadFloat();
+                vector.O = packet.ReadFloat();
 
             if (HasPitch)
                 packet.ReadFloat();
@@ -476,7 +476,7 @@ namespace WorldServer.Game.Packets.PacketHandler
                 movementValues.Time = packet.ReadUInt32();
 
             if (movementValues.HasRotation)
-                vector.W = packet.ReadFloat();
+                vector.O = packet.ReadFloat();
 
             if (HasSplineElevation)
                 packet.ReadFloat();
@@ -582,7 +582,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 
 
             if (movementValues.HasRotation)
-                vector.W = packet.ReadFloat();
+                vector.O = packet.ReadFloat();
 
             if (HasSplineElevation)
                 packet.ReadFloat();
@@ -681,7 +681,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 
 
             if (movementValues.HasRotation)
-                vector.W = packet.ReadFloat();
+                vector.O = packet.ReadFloat();
 
             /*if (IsInterpolated)
             {
@@ -799,7 +799,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             }*/
 
             if (movementValues.HasRotation)
-                vector.W = packet.ReadFloat();
+                vector.O = packet.ReadFloat();
 
             if (movementValues.IsAlive)
                 movementValues.Time = packet.ReadUInt32();
@@ -887,7 +887,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             moveUpdate.WriteFloat(vector.X);
 
             if (movementValues.HasRotation)
-                moveUpdate.WriteFloat(vector.W);
+                moveUpdate.WriteFloat(vector.O);
 
             moveUpdate.WriteFloat(vector.Y);
 
@@ -1009,7 +1009,7 @@ namespace WorldServer.Game.Packets.PacketHandler
             moveTeleport.WriteFloat(vector.X);
             moveTeleport.WriteFloat(vector.Y);
             moveTeleport.WriteFloat(vector.Z);
-            moveTeleport.WriteFloat(vector.W);
+            moveTeleport.WriteFloat(vector.O);
 
             BitPack.WriteGuidMask(3, 1, 7);
             BitPack.Write(Unknown);
@@ -1079,7 +1079,7 @@ namespace WorldServer.Game.Packets.PacketHandler
 
             newWorld.WriteUInt32(mapId);
             newWorld.WriteFloat(vector.Y);
-            newWorld.WriteFloat(vector.W);
+            newWorld.WriteFloat(vector.O);
             newWorld.WriteFloat(vector.X);
             newWorld.WriteFloat(vector.Z);
 

@@ -123,27 +123,33 @@ namespace WorldServer.Game.Packets.PacketHandler
                 Log.Message(LogType.DEBUG, "Gameobject (Id: {0}) not found.", id);
         }
 
-
         [Opcode(ClientMessage.NameCache, "16357")]
         public static void HandleNameCache(ref PacketReader packet, ref WorldClass session)
         {
             ulong guid = packet.ReadUInt64();
             uint realmId = packet.ReadUInt32();
 
-            var pChar = WorldMgr.GetSession(guid).Character;
+            var pSession = WorldMgr.GetSession(guid);
+            if (pSession != null)
+            {
+                var pChar = pSession.Character;
 
-            PacketWriter nameCache = new PacketWriter(LegacyMessage.NameCache);
+                if (pChar != null)
+                {
+                    PacketWriter nameCache = new PacketWriter(LegacyMessage.NameCache);
 
-            nameCache.WriteGuid(guid);
-            nameCache.WriteUInt8(0);
-            nameCache.WriteCString(pChar.Name);
-            nameCache.WriteUInt32(realmId);
-            nameCache.WriteUInt8(pChar.Race);
-            nameCache.WriteUInt8(pChar.Gender);
-            nameCache.WriteUInt8(pChar.Class);
-            nameCache.WriteUInt8(0);
+                    nameCache.WriteGuid(guid);
+                    nameCache.WriteUInt8(0);
+                    nameCache.WriteCString(pChar.Name);
+                    nameCache.WriteUInt32(realmId);
+                    nameCache.WriteUInt8(pChar.Race);
+                    nameCache.WriteUInt8(pChar.Gender);
+                    nameCache.WriteUInt8(pChar.Class);
+                    nameCache.WriteUInt8(0);
 
-            session.Send(ref nameCache);
+                    session.Send(ref nameCache);
+                }
+            }
         }
 
         [Opcode(ClientMessage.RealmCache, "16357")]

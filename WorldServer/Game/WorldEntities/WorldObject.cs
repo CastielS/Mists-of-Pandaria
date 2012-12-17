@@ -201,11 +201,9 @@ namespace WorldServer.Game.WorldEntities
                     updateObject.WriteUInt8(1);
                     updateObject.WriteGuid(spawn.Guid);
                     updateObject.WriteUInt8(5);
-
                     Globals.WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref spawn, updateFlags);
 
                     spawn.WriteUpdateFields(ref updateObject);
-                    spawn.WriteDynamicUpdateFields(ref updateObject);
 
                     session.Send(ref updateObject);
                 }

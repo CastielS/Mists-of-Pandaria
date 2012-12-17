@@ -70,7 +70,7 @@ namespace WorldServer.Game.WorldEntities
             Position.X     = result.Read<Single>(0, "X");
             Position.Y     = result.Read<Single>(0, "Y");
             Position.Z     = result.Read<Single>(0, "Z");
-            Position.W     = result.Read<Single>(0, "O");
+            Position.O     = result.Read<Single>(0, "O");
             GuildGuid      = result.Read<UInt64>(0, "GuildGuid");
             PetDisplayInfo = result.Read<UInt32>(0, "PetDisplayId");
             PetLevel       = result.Read<UInt32>(0, "PetLevel");

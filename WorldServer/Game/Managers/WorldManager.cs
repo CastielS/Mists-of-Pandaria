@@ -230,7 +230,7 @@ namespace WorldServer.Game.Managers
                 packet.WriteFloat(wObject.Position.Y);
                 BitPack.WriteGuidBytes(3);
                 packet.WriteFloat(wObject.Position.Z);
-                packet.WriteFloat(wObject.Position.W);
+                packet.WriteFloat(wObject.Position.O);
                 packet.WriteFloat((float)MovementSpeed.RunBackSpeed);
                 BitPack.WriteGuidBytes(0, 6);
                 packet.WriteFloat(wObject.Position.X);
@@ -249,16 +249,13 @@ namespace WorldServer.Game.Managers
             if (values.HasStationaryPosition)
             {
                 packet.WriteFloat(wObject.Position.X);
-                packet.WriteFloat(wObject.Position.W);
+                packet.WriteFloat(wObject.Position.O);
                 packet.WriteFloat(wObject.Position.Y);
                 packet.WriteFloat(wObject.Position.Z);
             }
 
             if (values.HasRotation)
-            {
-                // Packed orientation
-                packet.WriteUInt64(0);
-            }
+                packet.WriteInt64(Quaternion.GetCompressed(wObject.Position.O));
         }
     }
 }
