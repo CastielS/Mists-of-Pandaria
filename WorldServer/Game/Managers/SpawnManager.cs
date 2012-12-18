@@ -59,6 +59,26 @@ namespace WorldServer.Game.Managers
             return null;
         }
 
+        public uint FindCreatureCountByMap(uint map)
+        {
+            uint count = 0;
+            foreach (var c in CreatureSpawns)
+                if (c.Key.Map == map)
+                    ++count;
+
+            return count;
+        }
+
+        public uint FindGameObjectCountByMap(uint map)
+        {
+            uint count = 0;
+            foreach (var c in GameObjectSpawns)
+                if (c.Key.Map == map)
+                    ++count;
+
+            return count;
+        }
+
         public void LoadCreatureSpawns()
         {
             SQLResult result = DB.World.Select("SELECT * FROM creature_spawns");

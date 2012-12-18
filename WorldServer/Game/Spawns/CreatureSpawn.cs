@@ -176,7 +176,7 @@ namespace WorldServer.Game.Spawns
             SetUpdateField<Byte>((int)UnitFields.AnimTier, 0, 3);
 
             SetUpdateField<Int16>((int)UnitFields.RangedAttackRoundBaseTime, 0);
-            SetUpdateField<Int16>((int)UnitFields.RangedAttackRoundBaseTime, 0);
+            SetUpdateField<Int16>((int)UnitFields.RangedAttackRoundBaseTime, 0, 1);
             SetUpdateField<Single>((int)UnitFields.MinOffHandDamage, 0);
             SetUpdateField<Single>((int)UnitFields.MaxOffHandDamage, 0);
             SetUpdateField<Int32>((int)UnitFields.AttackPowerModPos, 0);

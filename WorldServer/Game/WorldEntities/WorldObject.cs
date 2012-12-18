@@ -37,9 +37,8 @@ namespace WorldServer.Game.WorldEntities
         public UInt64 TargetGuid;
 
         public bool IsInWorld { get; set; }
-        public byte Blocks;
+        public int MaskSize;
         public BitArray Mask;
-        public int DataLength;
         public Hashtable UpdateData = new Hashtable();
 
         public WorldObject() { }
@@ -47,8 +46,7 @@ namespace WorldServer.Game.WorldEntities
         public WorldObject(int dataLength)
         {
             IsInWorld = false;
-            DataLength = dataLength;
-            Blocks = (byte)((DataLength + 31) / 32);
+            MaskSize = (dataLength + 32) / 32;
             Mask = new BitArray(dataLength, false);
         }
 
@@ -56,6 +54,18 @@ namespace WorldServer.Game.WorldEntities
         {
             switch (value.GetType().Name)
             {
+                case "SByte":
+                case "Int16":
+                {
+                    Mask.Set(index, true);
+
+                    if (UpdateData.ContainsKey(index))
+                        UpdateData[index] = (int)((int)UpdateData[index] | (int)((int)Convert.ChangeType(value, typeof(int)) << (offset * (value.GetType().Name == "Byte" ? 8 : 16))));
+                    else
+                        UpdateData[index] = (int)((int)Convert.ChangeType(value, typeof(int)) << (offset * (value.GetType().Name == "Byte" ? 8 : 16)));
+
+                    break;
+                }
                 case "Byte":
                 case "UInt16":
                 {
@@ -65,6 +75,18 @@ namespace WorldServer.Game.WorldEntities
                         UpdateData[index] = (uint)((uint)UpdateData[index] | (uint)((uint)Convert.ChangeType(value, typeof(uint)) << (offset * (value.GetType().Name == "Byte" ? 8 : 16))));
                     else
                         UpdateData[index] = (uint)((uint)Convert.ChangeType(value, typeof(uint)) << (offset * (value.GetType().Name == "Byte" ? 8 : 16)));
+
+                    break;
+                }
+                case "Int64":
+                {
+                    Mask.Set(index, true);
+                    Mask.Set(index + 1, true);
+
+                    long tmpValue = (long)Convert.ChangeType(value, typeof(long));
+
+                    UpdateData[index] = (uint)(tmpValue & Int32.MaxValue);
+                    UpdateData[index + 1] = (uint)((tmpValue >> 32) & Int32.MaxValue);
 
                     break;
                 }
@@ -80,9 +102,6 @@ namespace WorldServer.Game.WorldEntities
                     
                     break;
                 }
-                case "Int32":
-                case "UInt32":
-                case "Single":
                 default:
                 {
                     Mask.Set(index, true);
@@ -93,12 +112,12 @@ namespace WorldServer.Game.WorldEntities
             }
         }
 
-        public void WriteUpdateFields(ref PacketWriter packet, bool sendAllFields = true)
+        public void WriteUpdateFields(ref PacketWriter packet, bool sendAllFields = false)
         {
-            packet.WriteUInt8(Blocks);
-            packet.WriteBitArray(Mask, (int)Blocks * 4);    // Int32 = 4 Bytes
+            packet.WriteUInt8((byte)MaskSize);
+            packet.WriteBitArray(Mask, MaskSize * 4);    // Int32 = 4 Bytes
 
-            for (int i = 0; i < DataLength; i++)
+            for (int i = 0; i < Mask.Count; i++)
             {
                 if (Mask.Get(i))
                 {
@@ -106,15 +125,6 @@ namespace WorldServer.Game.WorldEntities
                     {
                         switch (UpdateData[i].GetType().Name)
                         {
-                            /*case "Int16":
-                                packet.WriteInt16((short)UpdateData[i]);
-                                break;
-                            case "UInt16":
-                                packet.WriteUInt16((ushort)UpdateData[i]);
-                                break;*/
-                            case "Int32":
-                                packet.WriteInt32((int)UpdateData[i]);
-                                break;
                             case "UInt32":
                                 packet.WriteUInt32((uint)UpdateData[i]);
                                 break;
@@ -142,12 +152,17 @@ namespace WorldServer.Game.WorldEntities
 
         public void AddCreatureSpawnsToWorld(ref WorldClass session)
         {
-            var pChar = session.Character;
-
-            UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
-
             if (Globals.SpawnMgr.CreatureSpawns.Count > 0)
             {
+                var pChar = session.Character;
+
+                UpdateFlag updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+
+                PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
+
+                updateObject.WriteUInt16((ushort)Map);
+                updateObject.WriteUInt32(Globals.SpawnMgr.FindCreatureCountByMap(Map));
+
                 foreach (var s in Globals.SpawnMgr.CreatureSpawns)
                 {
                     WorldObject spawn = s.Key as CreatureSpawn;
@@ -158,32 +173,32 @@ namespace WorldServer.Game.WorldEntities
                     if (spawn.Map != pChar.Map)
                         continue;
 
-                    PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
-
-                    updateObject.WriteUInt16((ushort)spawn.Map);
-                    updateObject.WriteUInt32(1);
                     updateObject.WriteUInt8(1);
                     updateObject.WriteGuid(spawn.Guid);
-                    updateObject.WriteUInt8(3);
+                    updateObject.WriteUInt8((byte)ObjectType.Unit);
 
                     Globals.WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref spawn, updateFlags);
 
                     spawn.WriteUpdateFields(ref updateObject);
                     spawn.WriteDynamicUpdateFields(ref updateObject);
-
-                    session.Send(ref updateObject);
                 }
+
+                session.Send(ref updateObject);
             }
         }
 
         public void AddGameObjectSpawnsToWorld(ref WorldClass session)
         {
-            var pChar = session.Character;
-
-            UpdateFlag updateFlags = UpdateFlag.Rotation | UpdateFlag.StationaryPosition;
-
             if (Globals.SpawnMgr.GameObjectSpawns.Count > 0)
             {
+                var pChar = session.Character;
+
+                UpdateFlag updateFlags = UpdateFlag.Rotation | UpdateFlag.StationaryPosition;
+                PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
+
+                updateObject.WriteUInt16((ushort)Map);
+                updateObject.WriteUInt32(Globals.SpawnMgr.FindGameObjectCountByMap(Map));
+
                 foreach (var s in Globals.SpawnMgr.GameObjectSpawns)
                 {
                     WorldObject spawn = s.Key as GameObjectSpawn;
@@ -194,19 +209,17 @@ namespace WorldServer.Game.WorldEntities
                     if (spawn.Map != pChar.Map)
                         continue;
 
-                    PacketWriter updateObject = new PacketWriter(LegacyMessage.UpdateObject);
-
-                    updateObject.WriteUInt16((ushort)spawn.Map);
-                    updateObject.WriteUInt32(1);
                     updateObject.WriteUInt8(1);
                     updateObject.WriteGuid(spawn.Guid);
                     updateObject.WriteUInt8(5);
+
                     Globals.WorldMgr.WriteUpdateObjectMovement(ref updateObject, ref spawn, updateFlags);
 
                     spawn.WriteUpdateFields(ref updateObject);
-
-                    session.Send(ref updateObject);
+                    spawn.WriteDynamicUpdateFields(ref updateObject);
                 }
+
+                session.Send(ref updateObject);
             }
         }
 
