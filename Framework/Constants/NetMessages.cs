@@ -349,7 +349,7 @@ namespace Framework.Constants
         StopElapsedTimer                         = 0xDBD,
         StartElapsedTimers                       = 0x031,
         ChallengeModeComplete                    = 0x010,
-        ChallegeModeRewards                      = 0xAD5,
+        ChallengeModeRewards                     = 0xAD5,
         IncreaseCastTimeForSpell                 = 0x278,
         ClearAllSpellCharges                     = 0x139,
         ChallengeModeAllMapStats                 = 0x415,
