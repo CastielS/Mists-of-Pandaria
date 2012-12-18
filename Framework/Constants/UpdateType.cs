@@ -21,6 +21,7 @@ namespace Framework.Constants
     {
         Values            = 0,
         CreateObject      = 1,
-        CreateObjectSelf  = 2,
+        CreateObject2     = 2,
+        OutOfRange        = 3
     }
 }
