@@ -16,6 +16,7 @@
  */
 
 using Framework.Constants;
+using Framework.Logging;
 using Framework.Network.Packets;
 using System.Collections.Generic;
 using WorldServer.Game.Managers;
@@ -108,6 +109,18 @@ namespace WorldServer.Game.PacketHandler
             objectDestroy.WriteUInt8(0);
 
             return objectDestroy;
+        }
+
+        [Opcode(ClientMessage.ObjectUpdateFailed, "16357")]
+        public static void HandleObjectUpdateFailed(ref PacketReader packet, ref WorldClass session)
+        {
+            byte[] guidMask = { 6, 1, 7, 5, 0, 4, 2, 3 };
+            byte[] guidBytes = { 2, 3, 7, 4, 5, 1, 0, 6 };
+
+            BitUnpack GuidUnpacker = new BitUnpack(packet);
+
+            ulong guid = GuidUnpacker.GetGuid(guidMask, guidBytes);
+            Log.Message(LogType.DEBUG, "ObjectUpdate failed for object with Guid {0}", guid);
         }
     }
 }

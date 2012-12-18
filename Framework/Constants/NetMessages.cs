@@ -508,6 +508,7 @@ namespace Framework.Constants
         RealmCache                               = 0xA4D,
         ZoneUpdate                               = 0x88D,
         SetSelection                             = 0x17E,
+        ObjectUpdateFailed                       = 0x2FB,
         #endregion
 
         #region ChatMessages
